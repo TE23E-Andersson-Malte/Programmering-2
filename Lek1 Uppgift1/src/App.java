@@ -3,42 +3,75 @@ public class App {
         Boolean kör = true;
 
         while (kör) {
-            IO.println("""
-                    1. Addition
-                    2. Subtraktion
-                    3. Multiplikation
-                    4. Division
-                    5. Avsluta
-                    """);
-            int val = Integer.parseInt(IO.readln("Ange val: "));
-            switch (val) {
-                case 1:
-                    int add1 = Integer.parseInt(IO.readln("Ange tal 1: "));
-                    int add2 = Integer.parseInt(IO.readln("Ange tal 1: "));
-                    int addition = add1 + add2;
-                    IO.println(add1 + " + " + add2 + " = " + addition);
-                    break;
-                case 2:
-                    int sub1 = Integer.parseInt(IO.readln("Ange tal 1: "));
-                    int sub2 = Integer.parseInt(IO.readln("Ange tal 1: "));
-                    int subtraktion = sub1 - sub2;
-                    IO.println(sub1 + " - " + sub2 + " = " + subtraktion);
-                    break;
-                case 3:
-                    int mul1 = Integer.parseInt(IO.readln("Ange tal 1: "));
-                    int mul2 = Integer.parseInt(IO.readln("Ange tal 1: "));
-                    int multiplikation = mul1 * mul2;
-                    IO.println(mul1 + " * " + mul2 + " = " + multiplikation);
-                    break;
+
+            try {
+                IO.println("""
+                        1. Addition
+                        2. Subtraktion
+                        3. Multiplikation
+                        4. Division
+                        5. Avsluta
+                        """);
+                int val = Integer.parseInt(IO.readln("Ange val: "));
+
+                double[] tal = {};
+                switch (val) {
+                    case 1:
+                        tal = frågaTal();
+                        addition(tal[0], tal[1]);
+                        break;
+                    case 2:
+                        tal = frågaTal();
+                        subtraktion(tal[0], tal[1]);
+                        break;
+                    case 3:
+                        tal = frågaTal();
+                        multiplikation(tal[0], tal[1]);
+                        break;
                     case 4:
-                    int div1 = Integer.parseInt(IO.readln("Ange tal 1: "));
-                    int div2 = Integer.parseInt(IO.readln("Ange tal 1: "));
-                    int division = div1 / div2;
-                    IO.println(div1 + " / " + div2 + " = " + division);
-                    break;
-                default:
-                    break;
+                        tal = frågaTal();
+                        division(tal[0], tal[1]);
+                        break;
+                    case 5:
+                        kör = false;
+                        IO.println("Avslutar programmet...");
+                        break;
+                    default:
+                        IO.println("Fel val!");
+                }
+            } catch (Exception e) {
+                IO.println("Ange ett giltigt tal, försök igen!");
             }
         }
+    }
+
+    /******
+     * METODER
+     ******/
+
+    public static double[] frågaTal() {
+        double tal1 = Double.parseDouble(IO.readln("Ange tal 1: "));
+        double tal2 = Double.parseDouble(IO.readln("Ange tal 2: "));
+        return new double[] { tal1, tal2 };
+    }
+
+    public static void addition(double tal1, double tal2) {
+        double resultat = tal1 + tal2;
+        IO.println(tal1 + " + " + tal2 + " = " + resultat);
+    }
+
+    public static void subtraktion(double tal1, double tal2) {
+        double resultat = tal1 - tal2;
+        IO.println(tal1 + " - " + tal2 + " = " + resultat);
+    }
+
+    public static void multiplikation(double tal1, double tal2) {
+        double resultat = tal1 * tal2;
+        IO.println(tal1 + " * " + tal2 + " = " + resultat);
+    }
+
+    public static void division(double tal1, double tal2) {
+        double resultat = tal1 / tal2;
+        IO.println(tal1 + " / " + tal2 + " = " + resultat);
     }
 }
