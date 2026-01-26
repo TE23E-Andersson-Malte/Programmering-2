@@ -5,14 +5,16 @@ public class Bil {
     private int årsmodell;
     private int hastighet = 0;
 
+    //Default kontruktor
     Bil() {
         this.märke = "Okänd";
         this.modell = "Okänd";
-        this.registreringsnummer = "ABC 132";
+        this.registreringsnummer = "--- ---";
         this.årsmodell = 0000;
         this.hastighet = 0;
     }
 
+    //Kontruktor
     Bil(String märke, String modell, String registreringsnummer, int årsmodell) {
         if (märke == null || märke.trim().isEmpty())
             throw new IllegalArgumentException("Märket får inte vara tomt");
@@ -51,10 +53,38 @@ public class Bil {
         return märke;
     }
 
+    //Setters
     public void setModell(String modell){
          if (modell == null || modell.trim().isEmpty()){
             throw new IllegalArgumentException("Modell får inte vara tomt");
         }
         this.modell = modell;
+    }
+
+    //Metoder
+    public void ökaHastighet(int ökning){
+        if (ökning <= 0) {
+            throw new IllegalArgumentException("Ökningen ska vara > 0");
+        }
+        hastighet = hastighet + ökning;
+    }
+
+    public void bromsa(int minskning){
+        if (minskning <= 0) {
+            throw new IllegalArgumentException("Minskning ska vara > 0");
+        }
+        if (minskning > hastighet) {
+            hastighet = 0;
+        } else {
+            hastighet = hastighet - minskning;
+        }
+    }
+
+    //toString metod
+    public String toString(){
+        return "Bilen - Märke: " + märke +
+                 ", Modell: " + modell +
+                 ", Registreringsnummer: " + registreringsnummer +
+                 ", Årsmodell: " + årsmodell;
     }
 }
