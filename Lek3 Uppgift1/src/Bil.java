@@ -12,7 +12,7 @@ public class Bil extends Vagfordon {
         }
     }
 
-    public double getAntalSittplatser() {
+    public int getAntalSittplatser() {
         return sittplatser;
     }
 

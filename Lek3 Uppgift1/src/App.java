@@ -4,7 +4,6 @@ public class App {
     public static void main(String[] args) throws Exception {
 
         ArrayList<Vagfordon> fordon = new ArrayList<Vagfordon>();
-
         while (true) {
             IO.println("""
                     1. Skapa bil
@@ -14,23 +13,29 @@ public class App {
                     5. Avsluta
                     """);
             int val = Integer.parseInt(IO.readln());
+            IO.println("");
             switch (val) {
                 case 1:
                     Vagfordon ny_bil = new Bil("BIL123", "Bilägare", "Gul", 1000, 5);
                     fordon.add(ny_bil);
+                    break;
                 case 2:
                     Vagfordon ny_lastbil = new Lastbil("LAS123", "Lastbilägare", "Grön", 10000, 500);
                     fordon.add(ny_lastbil);
+                    break;
                 case 3:
                     Vagfordon ny_buss = new Buss("BUS123", "Bussägare", "Blå", 15000, 18);
                     fordon.add(ny_buss);
+                    break;
                 case 4:
                     IO.println("------------Lista över vägfordon--------------\n");
                 for (Vagfordon vagfordon : fordon) {
-                        IO.println(fordon + "\n");
+                        IO.println(vagfordon + "\n");
                     }
-                case 5:
                     break;
+                case 5:
+                    IO.println("Programmet avslutas...");
+                    return;
                 default:
                     IO.println("Ange ett val\n");
 

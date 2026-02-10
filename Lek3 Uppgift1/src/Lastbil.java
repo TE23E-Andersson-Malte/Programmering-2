@@ -6,7 +6,7 @@ public class Lastbil extends Vagfordon {
         super(reg_nr, ägare, färg, vikt);
 
         if (lastkapacitet < 0) {
-            throw new IllegalArgumentException("Lastkapacitet får inte var 0");
+            throw new IllegalArgumentException("Lastkapacitet får inte vara negativ");
         } else {
             this.lastkapacitet = lastkapacitet;
         }
