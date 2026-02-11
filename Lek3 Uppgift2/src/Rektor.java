@@ -4,7 +4,7 @@ public class Rektor extends SkolPersoner{
     //Konstruktor
     public Rektor(String namn, int ålder, String personnummer, String arbetsrum){
         super(namn, ålder, personnummer);
-        
+
         if (arbetsrum == null || arbetsrum.trim().isEmpty()) {
             throw new IllegalArgumentException("Arbetsrum får inte vara tomt");
         } else {
@@ -26,6 +26,7 @@ public class Rektor extends SkolPersoner{
         return arbetsrum;
     }
 
+    //toString
     @Override
     public String toString(){
         return "Rektor: " + super.toString() + "| Arbetsrum: " + arbetsrum;
