@@ -1,5 +1,3 @@
-package hashmap;
-
 public class Vara {
     private String namn;
     private double pris;
