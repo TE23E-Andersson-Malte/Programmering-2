@@ -1,0 +1,6 @@
+[
+  { "bank": "Sparbanken", "konto_nummer": 1001, "saldo": 2500, "ägare": "Anna Andersson" },
+  { "bank": "Nordea", "konto_nummer": 2002, "saldo": 150, "ägare": "Erik Berg" },
+  { "bank": "Handelsbanken", "konto_nummer": 3003, "saldo": 12000, "ägare": "Beatrice Lind" },
+  { "bank": "Swedbank", "konto_nummer": 4004, "saldo": 50, "ägare": "Zoran Petrovic" }
+]
