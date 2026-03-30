@@ -1,3 +1,4 @@
+package trafikverket;
 public class Lastbil extends Vagfordon {
 
     protected double lastkapacitet;

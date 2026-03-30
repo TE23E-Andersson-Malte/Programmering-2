@@ -1,0 +1,66 @@
+[
+  {
+    "typ": "Bil",
+    "märke": "Volvo",
+    "modell": "V60",
+    "regNr": "ABC 123",
+    "sittPlatser": 5,
+    "ledigaPlatser": 2
+  },
+  {
+    "typ": "Lastbil",
+    "märke": "Scania",
+    "modell": "R500",
+    "regNr": "XYZ 987",
+    "maxLast": 15000,
+    "lastadVikt": 4500
+  },
+  {
+    "typ": "Bil",
+    "märke": "Tesla",
+    "modell": "Model 3",
+    "regNr": "DEF 456",
+    "sittPlatser": 5,
+    "ledigaPlatser": 5
+  },
+  {
+    "typ": "Lastbil",
+    "märke": "Volvo",
+    "modell": "FH16",
+    "regNr": "AAA 111",
+    "maxLast": 40000,
+    "lastadVikt": 0
+  },
+  {
+    "typ": "Bil",
+    "märke": "Volkswagen",
+    "modell": "ID.4",
+    "regNr": "GHI 789",
+    "sittPlatser": 5,
+    "ledigaPlatser": 1
+  },
+  {
+    "typ": "Lastbil",
+    "märke": "Mercedes-Benz",
+    "modell": "Actros",
+    "regNr": "JKL 012",
+    "maxLast": 25000,
+    "lastadVikt": 22000
+  },
+  {
+    "typ": "Bil",
+    "märke": "Kia",
+    "modell": "EV6",
+    "regNr": "MNO 345",
+    "sittPlatser": 5,
+    "ledigaPlatser": 4
+  },
+  {
+    "typ": "Bil",
+    "märke": "Toyota",
+    "modell": "Proace City",
+    "regNr": "PQR 678",
+    "sittPlatser": 3,
+    "ledigaPlatser": 0
+  }
+]

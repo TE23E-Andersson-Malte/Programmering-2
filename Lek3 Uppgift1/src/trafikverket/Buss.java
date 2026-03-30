@@ -1,3 +1,4 @@
+package trafikverket;
 public class Buss extends Vagfordon{
 
     protected int antalPassagerare;

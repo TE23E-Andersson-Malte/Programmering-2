@@ -1,3 +1,4 @@
+package trafikverket;
 public class Vagfordon {
     protected String reg_nr;
     protected String ägare;

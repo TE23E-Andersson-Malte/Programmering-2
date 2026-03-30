@@ -1,3 +1,4 @@
+package trafikverket;
 public class Bil extends Vagfordon {
 
     protected int sittplatser;
