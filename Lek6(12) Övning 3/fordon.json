@@ -1,0 +1,37 @@
+[
+  {
+    "marke": "Volvo",
+    "modell": "V70",
+    "reg": "ABC123",
+    "typ": "Bil",
+    "antalDorrar": 5
+  },
+  {
+    "marke": "BMW",
+    "modell": "R1200",
+    "reg": "MC456",
+    "typ": "Motorcykel",
+    "harSidovagn": false
+  },
+  {
+    "marke": "Scania",
+    "modell": "R500",
+    "reg": "LST789",
+    "typ": "Lastbil",
+    "lastkapacitet": 12000
+  },
+  {
+    "marke": "Audi",
+    "modell": "A4",
+    "reg": "XYZ987",
+    "typ": "Bil",
+    "antalDorrar": 4
+  },
+  {
+    "marke": "Harley-Davidson",
+    "modell": "Sportster",
+    "reg": "HD333",
+    "typ": "Motorcykel",
+    "harSidovagn": true
+  }
+]
