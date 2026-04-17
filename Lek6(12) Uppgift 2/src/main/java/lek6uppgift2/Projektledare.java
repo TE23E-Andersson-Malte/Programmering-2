@@ -13,7 +13,7 @@ public class Projektledare extends Personal{
 
    @Override
     public String toString() {
-        return "Personal [typ=" + typ + ", namn=" + namn + ", personnummer=" + personnummer + ", lön=" + lön
-                + ", avdelning=" + avdelning + ", antalprojekt: " + antalProjekt + "]";
+        return namn + " - Typ: " + typ + 
+         ", Personnummer: " + personnummer + ", Lön: " + lön + ", Avdelning: " + avdelning + ", Antal projekt: " + antalProjekt;
     }
 }

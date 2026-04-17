@@ -37,8 +37,8 @@ public abstract class Personal {
 
     @Override
     public String toString(){
-        return "Person - Typ: " + typ + " Namn: " + namn +
-         " Personnummer: " + personnummer + " Lön: " + lön + " Avdelning: " + avdelning;
+        return namn + " - Typ: " + typ + 
+         ", Personnummer: " + personnummer + ", Lön: " + lön + ", Avdelning: " + avdelning;
     }
 
 }
