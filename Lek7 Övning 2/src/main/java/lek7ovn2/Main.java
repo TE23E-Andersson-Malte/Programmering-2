@@ -137,5 +137,31 @@ public class Main {
         String putBody = putResponse.getBody();
         ForumPost updatedPost = gson.fromJson(putBody, ForumPost.class);
         IO.println("Uppdaterat på servern: " + updatedPost);
+
+        IO.println("\n--- 5. DELETE (Ta bort inlägg) ---");
+
+        int delete_id = 101;
+        int deleteStatus;
+
+        try {
+            //Skicka ett DELETE-anrop och hämta bara statuskoden (v1 förväntar oss ingen body)
+            deleteStatus = Unirest.delete(baseUrl + "/" + delete_id)
+                .asEmpty() //Skickar INGEN body
+                .getStatus();
+        } catch (UnirestException e) {
+            IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
+            return;
+        }
+
+        if (deleteStatus == 200) {
+            IO.println("Inlägget med ID " + delete_id + " är borttaget!");
+        } else if (deleteStatus == 204){
+            IO.println("Inlägget fanns inte kvar / inget innehåll på ID: " + delete_id);
+        } else {
+            IO.println("Något gick fel. Statuskod: " + deleteStatus);
+        }
+
+        //Stäng Unirest för att frigöra datorns resurser när programmet är färdigt
+        Unirest.shutDown();
     }
 }
