@@ -1,23 +1,5 @@
 [
   {
-    "id": 2,
-    "userId": 2,
-    "title": "Best VS Code Extensions in 2026",
-    "body": "What are your must-have extensions this year? I'm looking for better AI integration."
-  },
-  {
-    "id": 3,
-    "userId": 5,
-    "title": "React vs. Vue: The Eternal Debate",
-    "body": "With the latest updates, which framework do you find more productive for rapid prototyping?"
-  },
-  {
-    "id": 5,
-    "userId": 3,
-    "title": "JSON Schema Best Practices",
-    "body": "I'm struggling with nested references in my schemas. Any tips for keeping them clean?"
-  },
-  {
     "id": 6,
     "userId": 1,
     "title": "My First Python Script",
@@ -28,12 +10,6 @@
     "userId": 2,
     "title": "TypeScript 6.0 Features",
     "body": "The new decorators are game-changers. Has anyone tried them in production yet?"
-  },
-  {
-    "id": 8,
-    "userId": 4,
-    "title": "Remote Work Trends",
-    "body": "Are companies still pushing for RTO (Return to Office) in your area, or is remote here to stay?"
   },
   {
     "id": 9,
@@ -124,5 +100,11 @@
     "userId": 1,
     "title": "I SEE U",
     "body": "!"
+  },
+  {
+    "id": 70,
+    "userId": 102,
+    "title": "Welc0me tO the F0rum",
+    "body": "This is the first p0st"
   }
 ]

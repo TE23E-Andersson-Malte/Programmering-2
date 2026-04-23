@@ -26,7 +26,7 @@ public class Main {
         IO.println("\n--- 1. GET (Ett objekt) ---");
         HttpResponse<String> one_response;
         try {
-            one_response = Unirest.get(baseUrl + "/2").asString();
+            one_response = Unirest.get(baseUrl + "/10").asString();
         } catch (UnirestException e) {
             IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
             return;
@@ -140,7 +140,7 @@ public class Main {
 
         IO.println("\n--- 5. DELETE (Ta bort inlägg) ---");
 
-        int delete_id = 101;
+        int delete_id = 10;
         int deleteStatus;
 
         try {
