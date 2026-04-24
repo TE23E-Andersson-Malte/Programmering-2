@@ -1,15 +1,15 @@
 package lek7uppgift1;
 
 public class Kommentar {
-    private int postid;
+    private int postId;
     private int id;
     private String email;
     private String body;
 
     public Kommentar(){}
 
-    public Kommentar(int postid, int id, String email, String body){
-        this.postid = postid;
+    public Kommentar(int postId, int id, String email, String body){
+        this.postId = postId;
         this.id = id;
         this.email = email;
         this.body = body;
@@ -19,8 +19,8 @@ public class Kommentar {
         this.id = id;
     }
 
-    public void setPostid(int postid) {
-        this.postid = postid;
+    public void setPostUd(int postId) {
+        this.postId = postId;
     }
 
     public void setEmail(String email) {
@@ -31,8 +31,8 @@ public class Kommentar {
         this.body = body;
     }
 
-    public int getPostid() {
-        return postid;
+    public int getPostId() {
+        return postId;
     }
 
     public int getId() {
@@ -49,6 +49,6 @@ public class Kommentar {
 
     @Override
     public String toString() {
-        return "Kommentar [postid=" + postid + ", id=" + id + ", email=" + email + ", body=" + body + "]";
+        return "Kommentar [postid=" + postId + ", id=" + id + ", email=" + email + ", body=" + body + "]";
     }
 }
