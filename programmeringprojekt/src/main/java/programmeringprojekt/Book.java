@@ -39,9 +39,9 @@ public class Book extends LibraryItem implements Borrowable{
     //GET INFO
     @Override
     public String getInfo(){
-        return "Book - ID: " + id + ", Title: " + title +
-         ", isAvailable: " + isAvailable + ", Author: " + 
-         author + ", Genre: " + genre + ", Pages: " + pages;
+        return "Book | ID: " + id + " | Title: " + title +
+         " | isAvailable: " + isAvailable + " | Author: " + 
+         author + " | Genre: " + genre + " | Pages: " + pages;
     }
 
     /***LÅN- OCH RETURFUNKTIONER***/

@@ -1,5 +1,10 @@
 package programmeringprojekt;
 
+/*
+ * Malte Andersson
+ * Library system hanterar alla funktioner inom biblioteket
+ */
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +28,41 @@ public class LibrarySystem {
     int status;
     String body;
 
-    public void addBook(Book book){ //boolean????
 
+    /*************
+    === E-nivå ===
+    *************/
+
+    //Skapa ny bok och lägg till i listan
+    public void addBookToArrayList(){ 
+        //Be användaren mata in info om boken
+        String title = IO.readln("Ange titel: ");
+        String id = String.valueOf(books.size() + 1);
+
+        String author = IO.readln("Ange författare: ");
+        String genre = IO.readln("Ange genre: ");
+        int pages = Integer.parseInt(IO.readln("Ange antal sidor: "));
+
+        //Skapa ny bok med informationen och lägg till i listan
+        Book newBook = new Book(id, title, true, author, genre, pages);
+        books.add(newBook);
+        IO.println("\nBoken har lagts till i listan: \n" + newBook.getInfo());
     }
 
-    public void addMagazine(Magazine magazine){ //boolean????
+    //Skapa ny tidning och lägg till i listan
+    public void addMagazineToArrayList(){ 
+        //Be användaren mata in info om tidningen
+        String title = IO.readln("Ange titel: ");
+        String id = String.valueOf(magazines.size() + 1);
 
+        int issueNumber = Integer.parseInt(IO.readln("Ange utgåvonummer: "));
+        String category = IO.readln("Ange kategori: ");
+        int publishedYear = Integer.parseInt(IO.readln("Ange publicerat år: "));
+
+        //Skapa och lägg till tidningen i listan
+        Magazine newMagazine = new Magazine(id, title, true, issueNumber, category, publishedYear);
+        magazines.add(newMagazine);
+        IO.println("\nTidningen har lagts till i listan: \n" + newMagazine.getInfo());
     }
 
     //Hämta alla böcker från servern
@@ -85,6 +119,28 @@ public class LibrarySystem {
         IO.println("Hämtning av tidningar lyckad! Antal tidningar hämtade: " + magazines.size());
         return true;
     }
+
+    public void printBooks(){
+        //Loopa igenom listan med böcker och skriv ut varje bok på en rad
+        for (Book book : books) {
+            IO.println(book.getInfo());
+        }
+    }
+
+    public void printMagazines(){
+        //Loopa igenom listan med tidningar och skriv ut 
+        for (Magazine magazine : magazines) {
+            IO.println(magazine.getInfo());
+        }
+    }
+
+    /*************
+    === C-nivå ===
+    *************/
+
+    /*************
+    === A-nivå ===
+    *************/
 
     public void printBooksSorted(){
 
