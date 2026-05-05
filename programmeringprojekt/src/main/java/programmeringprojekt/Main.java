@@ -1,5 +1,10 @@
 package programmeringprojekt;
 
+/*
+* Malte Andersson
+* Filen där menyn för programmet körs
+*/
+
 public class Main {
     public static void main(String[] args) {
 
