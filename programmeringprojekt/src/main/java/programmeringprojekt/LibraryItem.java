@@ -15,12 +15,14 @@ public abstract class LibraryItem {
     protected String title;
     protected boolean isAvailable;
 
+    /***KONSTRUKTOR***/
     public LibraryItem(String id, String title, boolean isAvailable){
         this.id = id;
         this.title = title;
         this.isAvailable = isAvailable;
     }
 
+    /***GETTERS***/
     public String getId() {
         return id;
     }
@@ -33,9 +35,11 @@ public abstract class LibraryItem {
         return isAvailable;
     }
 
+    /***SETTERS***/
     public void setIsAvailable(boolean isAvailable){
         this.isAvailable = isAvailable;
     }
 
+    //GET INFO
     public abstract String getInfo();
 }

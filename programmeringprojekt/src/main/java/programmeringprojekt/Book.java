@@ -5,7 +5,7 @@ package programmeringprojekt;
  * Klassen Book är en barnklass till den abstrakta klassen LibraryItem
  * och representerar en bok i biblioteket med unika egenskaper
  * som författare, genre och antal sidor
- * Book används av LibrarySystem som hanterar in- och utlånning samt lagring av böcker
+ * Book används av LibrarySystem som hanterar in- och utlånning samt lagring av bok-objekt
  * Klassen implementerar gränssnittet Borrowable
  * vilket gör att den måste definera funktioner för lån och retur av en bok
 */
