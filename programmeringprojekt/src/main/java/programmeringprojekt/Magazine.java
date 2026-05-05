@@ -1,5 +1,15 @@
 package programmeringprojekt;
 
+/*
+ * Malte Andersson
+ * Klassen Magazine är en barnklass till den abstrakta klassen LibraryItem
+ * och representerar en magasin i biblioteket med unika egenskaper
+ * som utgåvanummer, kategori och publiserat år
+ * Magazine används av LibrarySystem som hanterar in- och utlånning samt lagring av magasin
+ * Klassen implementerar gränssnittet Borrowable
+ * vilket gör att den måste definera funktioner för lån och retur av ett magasin
+*/
+
 public class Magazine extends LibraryItem implements Borrowable{
     private int issueNumber;
     private String category;

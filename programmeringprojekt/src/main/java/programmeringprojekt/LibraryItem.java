@@ -1,5 +1,15 @@
 package programmeringprojekt;
 
+/*
+ * Malte Andersson
+ * Filen innehåller den abstrakta klassen LibraryItem (biblioteksförenål)
+ * som representerar ett föremål i ett bibliotek
+ * och innehåller egenskaperna id, titel och isAvailable (om föremålet är tillgängligt för utlåning)
+ * LibraryItem används av barnklasserna Book och Magazine
+ * som ärver variabler och metoder
+ * Eftersom LibraryItem är abstrkt kan inga objekt av denna klass skapas direkt, utan endast genom dess subklasser
+ */
+
 public abstract class LibraryItem {
     protected String id;
     protected String title;
