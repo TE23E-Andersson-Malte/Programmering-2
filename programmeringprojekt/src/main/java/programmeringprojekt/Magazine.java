@@ -39,7 +39,7 @@ public class Magazine extends LibraryItem implements Borrowable{
     //GET INFO
     @Override
     public String getInfo(){
-        return "Magazine | ID: " + id + " | Title: " + title +
+        return "MAGAZINE | ID: " + id + " | Title: " + title +
          " | IsAvailable: " + isAvailable + " | IssueNumber: " + 
          issueNumber + " | Category: " + category + " | PublishedYear: " + publishedYear;
     }

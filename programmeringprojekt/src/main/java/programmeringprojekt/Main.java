@@ -17,8 +17,8 @@ public class Main {
         while (loop) {
             IO.println("""
                     \n==== BIBLIOTEK ====
-                    1. Hämta böcker
-                    2. Hämta tidningar
+                    1. Hämta alla böcker
+                    2. Hämta alla tidningar
                     3. Skriv ut böcker
                     4. Skriv ut tidningar
                     5. Lägg till bok

@@ -39,7 +39,7 @@ public class Book extends LibraryItem implements Borrowable{
     //GET INFO
     @Override
     public String getInfo(){
-        return "Book | ID: " + id + " | Title: " + title +
+        return "BOOK | ID: " + id + " | Title: " + title +
          " | isAvailable: " + isAvailable + " | Author: " + 
          author + " | Genre: " + genre + " | Pages: " + pages;
     }
