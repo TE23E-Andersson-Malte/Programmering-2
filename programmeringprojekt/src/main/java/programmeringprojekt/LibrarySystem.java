@@ -28,6 +28,9 @@ public class LibrarySystem {
     int status;
     String body;
 
+    //Variabler för ID för nya böcker och tidningar
+    int iBook = 1;
+    int iMagazine = 1;
 
     /*************
     === E-nivå ===
@@ -37,7 +40,7 @@ public class LibrarySystem {
     public void addBookToArrayList(){ 
         //Be användaren mata in info om boken
         String title = IO.readln("Ange titel: ");
-        String id = String.valueOf(books.size() + 1);
+        String id = String.valueOf(100 + iBook);
 
         String author = IO.readln("Ange författare: ");
         String genre = IO.readln("Ange genre: ");
@@ -47,13 +50,14 @@ public class LibrarySystem {
         Book newBook = new Book(id, title, true, author, genre, pages);
         books.add(newBook);
         IO.println("\nBoken har lagts till i listan: \n" + newBook.getInfo());
+        iBook++;
     }
 
     //Skapa ny tidning och lägg till i listan
     public void addMagazineToArrayList(){ 
         //Be användaren mata in info om tidningen
         String title = IO.readln("Ange titel: ");
-        String id = String.valueOf(magazines.size() + 1);
+        String id = String.valueOf(10 + iMagazine);
 
         int issueNumber = Integer.parseInt(IO.readln("Ange utgåvonummer: "));
         String category = IO.readln("Ange kategori: ");
@@ -63,6 +67,7 @@ public class LibrarySystem {
         Magazine newMagazine = new Magazine(id, title, true, issueNumber, category, publishedYear);
         magazines.add(newMagazine);
         IO.println("\nTidningen har lagts till i listan: \n" + newMagazine.getInfo());
+        iMagazine++;
     }
 
     //Hämta alla böcker från servern
@@ -87,7 +92,11 @@ public class LibrarySystem {
 
         //Översätt JSON-texten till en ArrayList av Book-objektet
         Type bookType = new TypeToken<ArrayList<Book>>(){}.getType();
-        books = gson.fromJson(body, bookType);
+        //Lägg till i lista, sedan loopa igenom listan för att lägga till i samlingen av böcker
+        ArrayList<Book> jsonBooks = gson.fromJson(body, bookType);
+        for (Book book : jsonBooks) {
+            books.add(book);
+        }
         
         IO.println("Hämtning av böcker lyckad! Antal böcker hämtade: " + books.size());
         return true;
@@ -114,7 +123,11 @@ public class LibrarySystem {
 
         //Översätt JSON-texten till en ArrayList av Book-objektet
         Type magazineType = new TypeToken<ArrayList<Magazine>>(){}.getType();
-        magazines = gson.fromJson(body, magazineType);
+        //Lägg till i lista, sedan loopa igenom listan för att lägga till i samlingen av tidningar
+        ArrayList<Magazine> jsonMagazines = gson.fromJson(body, magazineType);
+        for (Magazine magazine : jsonMagazines) {
+            magazines.add(magazine);
+        }
         
         IO.println("Hämtning av tidningar lyckad! Antal tidningar hämtade: " + magazines.size());
         return true;
