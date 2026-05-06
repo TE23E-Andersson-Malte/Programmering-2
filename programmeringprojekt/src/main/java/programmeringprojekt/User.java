@@ -1,6 +1,5 @@
 package programmeringprojekt;
 
-import java.security.PublicKey;
 import java.util.List;
 
 public class User {
