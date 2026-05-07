@@ -1,12 +1,12 @@
 package programmeringprojekt;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class User {
     private String id;
     private String name;
     private String email;
-    private List<Borrowable> borrowedItems;
+    private ArrayList<Borrowable> borrowedItems;
 
     /***KONSTRUKTOR***/
     public User(String id, String name, String email){
@@ -28,7 +28,7 @@ public class User {
         return email;
     }
 
-    public List<Borrowable> getBorrowedItems() {
+    public ArrayList<Borrowable> getBorrowedItems() {
         return borrowedItems;
     }
 

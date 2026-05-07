@@ -98,10 +98,11 @@ public class LibrarySystem {
             books.add(book);
         }
         
-        IO.println("Hämtning av böcker lyckad! Antal böcker hämtade: " + books.size());
+        IO.println("Hämtning av böcker lyckad! Antal böcker hämtade: " + jsonBooks.size());
         return true;
     }
 
+    //Hämta alla tidningar från servern
     public boolean getMagazinesFromServer(){ ///hade inte med i planering!!!!
         //Försök hämta tidningar
         try {
@@ -129,10 +130,11 @@ public class LibrarySystem {
             magazines.add(magazine);
         }
         
-        IO.println("Hämtning av tidningar lyckad! Antal tidningar hämtade: " + magazines.size());
+        IO.println("Hämtning av tidningar lyckad! Antal tidningar hämtade: " + jsonMagazines.size());
         return true;
     }
 
+    //Skriv ut böcker
     public void printBooks(){
         //Loopa igenom listan med böcker och skriv ut varje bok på en rad
         for (Book book : books) {
@@ -140,6 +142,7 @@ public class LibrarySystem {
         }
     }
 
+    //Skriv ut tidningar
     public void printMagazines(){
         //Loopa igenom listan med tidningar och skriv ut 
         for (Magazine magazine : magazines) {
@@ -151,9 +154,109 @@ public class LibrarySystem {
     === C-nivå ===
     *************/
 
-    /*************
-    === A-nivå ===
-    *************/
+    //Hämta alla användare från servern
+    public boolean getUsersFromServer(){
+        return true;
+    }
+
+    //Hämta alla avstängda användare från servern
+    public boolean getSuspendedUsersFromServer(){
+        return true;
+    }
+
+    //Hämta en bok från servern
+    public boolean getOneBookFromServer(){
+        String id = IO.readln("Ange ID på boken: ");
+        
+        //Försök hämta boken
+        try {
+            response = Unirest.get(baseURL + "books/" + id).asString();
+        } catch (UnirestException e) {
+            IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
+            return false;
+        }
+
+        //Kolla status
+        status = response.getStatus();
+        if (status != 200) {
+            IO.println("Fel från server! Statuskod: " + status);
+            return false;
+        }
+
+        //Hämta själva informationen för boken
+        body = response.getBody();
+
+        //Översätt JSON-texten till ett Book-objekt av boken och lägg till i samlingen       
+        Book jsonBook = gson.fromJson(body, Book.class);
+        books.add(jsonBook);
+        
+        
+        IO.println("Hämtning av bok (ID: " + id + ") lyckad!");
+        return true;
+    }
+
+    //Hämta en tidning från Servern
+    public boolean getOneMagazineFromServer(){
+        String id = IO.readln("Ange ID på tidningen: ");
+        
+        //Försök hämta boken
+        try {
+            response = Unirest.get(baseURL + "magazines/" + id).asString();
+        } catch (UnirestException e) {
+            IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
+            return false;
+        }
+
+        //Kolla status
+        status = response.getStatus();
+        if (status != 200) {
+            IO.println("Fel från server! Statuskod: " + status);
+            return false;
+        }
+
+        //Hämta själva informationen för boken
+        body = response.getBody();
+
+        //Översätt JSON-texten till ett Book-objekt av boken och lägg till i samlingen       
+        Magazine jsonMagazine = gson.fromJson(body, Magazine.class);
+        magazines.add(jsonMagazine);
+        
+        IO.println("Hämtning av tidning (ID: " + id + ") lyckad!");
+        return true;
+    }
+
+    //Hämta en användare från servern
+    public boolean getOneUserFromServer(){
+        return true;
+    }
+
+    //Hämta en avstängd användare från servern
+    public boolean getOneSuspendedUserFromServer(){
+        return true;
+    }
+
+    //TODO
+    //Skapa ny bok/tidning/användare/avstängd och lägga upp på server
+
+    //Hitta en kund med hjälp av email-adress
+    public void findUser(){
+
+    }
+
+    //Hitta en bok med hjälp av titel
+    public void findBook(){
+
+    }
+
+    //Hitta en tidning med hjälp av titel
+    public void findMagazine(){
+
+    }
+
+    //TODO
+    //Ta bort böcker/tidningar/kund/avstängd på server med hjälp av title och ta bort på server.
+    //Ta bort kund med hjälp av email och avstängd med id på server.
+
 
     public void printBooksSorted(){
 
@@ -162,4 +265,17 @@ public class LibrarySystem {
     public void printMagazinesSorted(){
 
     }
+
+    public void printUsersSorted(){
+
+    }
+
+    public boolean canUserBorrow(){
+        return true;
+    }
+    /************
+    === A-nivå ===
+    *************/
+
+    
 }
