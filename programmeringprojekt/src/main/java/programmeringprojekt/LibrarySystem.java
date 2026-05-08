@@ -30,9 +30,11 @@ public class LibrarySystem {
     int status;
     String body;
 
-    //Variabler för ID för nya böcker och tidningar
+    //Variabler för ID för nya böcker och tidningar samt användare
     int iBook = 1;
     int iMagazine = 1;
+    int iUser = 1;
+    int iSuspendedUser = 1;
 
 
 
@@ -43,7 +45,7 @@ public class LibrarySystem {
 
 
     //Skapa ny bok och lägg till i listan
-    public void addBookToArrayList(){ 
+    public void addBook(){ 
         //Be användaren mata in info om boken
         String title = IO.readln("Ange titel: ");
         String id = String.valueOf(100 + iBook);
@@ -57,10 +59,16 @@ public class LibrarySystem {
         books.add(newBook);
         IO.println("\nBoken har lagts till i listan: \n" + newBook.getInfo());
         iBook++;
+        /***********
+        ** C-NIVÅ **
+        ***********/
+
+        //TODO Ladda upp på server
+
     }
 
     //Skapa ny tidning och lägg till i listan
-    public void addMagazineToArrayList(){ 
+    public void addMagazine(){ 
         //Be användaren mata in info om tidningen
         String title = IO.readln("Ange titel: ");
         String id = String.valueOf(10 + iMagazine);
@@ -74,6 +82,11 @@ public class LibrarySystem {
         magazines.add(newMagazine);
         IO.println("\nTidningen har lagts till i listan: \n" + newMagazine.getInfo());
         iMagazine++;
+        /***********
+        ** C-NIVÅ **
+        ***********/
+
+        //TODO Ladda upp på server
     }
 
     //Hämta alla böcker från servern
@@ -351,6 +364,24 @@ public class LibrarySystem {
 
     //TODO
     //Skapa ny bok/tidning/användare/avstängd och lägga upp på server
+
+    //Skapa ny användare och lägg till i listan och på server
+    public void addUser(){ 
+        //Be användaren mata in info om user
+        String name = IO.readln("Ange namn: ");
+        String id = String.valueOf(102 + iBook);
+
+        String email = IO.readln("Ange email: ");
+
+        //Skapa ny användare med informationen och lägg till i listan
+        User newUser = new User(id, name, email);
+        users.add(newUser);
+        IO.println("\nAnvändaren har lagts till i listan: \n" + newUser.toString());
+        iUser++;
+
+        //TODO Ladda upp på server
+
+    }
 
     //Hitta en kund med hjälp av email-adress
     public void findUser(){
