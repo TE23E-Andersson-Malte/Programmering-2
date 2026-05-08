@@ -19,15 +19,16 @@ public class Main {
                     \n==== BIBLIOTEK ====
                     1. Hämta böcker
                     2. Hämta tidningar
-                    3. Skriv ut böcker
-                    4. Skriv ut tidningar
-                    5. Lägg till bok
-                    6. Lägg till tidning
-                    7. Avsluta
+                    3. Hämta användare
+                    4. Skriv ut böcker
+                    5. Skriv ut tidningar
+                    6. Lägg till bok
+                    7. Lägg till tidning
+                    8. Avsluta
                     """);
             try {
                 val = Integer.parseInt(IO.readln("Ange alternativ: "));
-                if (val >= 1 && val <= 7) {
+                if (val >= 1 && val <= 8) {
                     IO.println("\n----------------------------------------------------\n");
                     switch (val) {
                         // TODO Undermenyer
@@ -57,6 +58,7 @@ public class Main {
                             } else {
                                 IO.println("\nOgiltigt val! Försök igen...");
                             }
+                            break;
                         case 2:
                             IO.println("""
                                     === HÄMTA TIDNINGAR ===
@@ -82,20 +84,54 @@ public class Main {
                             } else {
                                 IO.println("\nOgiltigt val! Försök igen...");
                             }
+                            break;
                         case 3:
-                            bibliotek.printBooks();
+                            IO.println("""
+                                    === HÄMTA ANVÄNDARE ===
+                                    1. Hämta alla användare
+                                    2. Hämta en användare
+                                    3. Hämta alla avstängda användare
+                                    4. Hämta en avstängd användare
+                                    5. Gå tillbaka
+                                    """);
+                            val = Integer.parseInt(IO.readln("Ange alternativ: "));
+                            if (val >= 1 && val <= 5) {
+                                IO.println("\n----------------------------------------------------\n");
+                                switch (val) {
+                                    case 1:
+                                        bibliotek.getUsersFromServer();
+                                        break;
+                                    case 2:
+                                        bibliotek.getOneUserFromServer();
+                                        break;
+                                    case 3:
+                                        bibliotek.getSuspendedUsersFromServer();
+                                        break;
+                                    case 4:
+                                        bibliotek.getOneSuspendedUserFromServer();
+                                    case 5:
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            } else {
+                                IO.println("\nOgiltigt val! Försök igen...");
+                            }
                             break;
                         case 4:
-                            bibliotek.printMagazines();
+                            bibliotek.printBooks();
                             break;
                         case 5:
-                            bibliotek.addBookToArrayList();
+                            bibliotek.printMagazines();
                             break;
                         case 6:
-                            bibliotek.addMagazineToArrayList();
+                            bibliotek.addBookToArrayList();
                             break;
                         case 7:
-                            IO.println("Avslutar...");
+                            bibliotek.addMagazineToArrayList();
+                            break;
+                        case 8:
+                            IO.println("Avslutar...\n");
                             loop = false;
                             break;
                         default:

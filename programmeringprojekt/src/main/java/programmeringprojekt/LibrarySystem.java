@@ -19,6 +19,8 @@ import kong.unirest.UnirestException;
 public class LibrarySystem {
     private List<Book> books = new ArrayList<>();
     private List<Magazine> magazines = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
+    private List<SuspendedUser> suspendedUsers = new ArrayList<>();
 
     Gson gson = new Gson(); //Gson för att översätta data
     String baseURL = "http://10.151.168.5:3140/"; //URL till server
@@ -32,9 +34,13 @@ public class LibrarySystem {
     int iBook = 1;
     int iMagazine = 1;
 
-    /*************
-    === E-nivå ===
-    *************/
+
+
+    /***************************************
+    ================ E-nivå ================
+    ***************************************/
+
+
 
     //Skapa ny bok och lägg till i listan
     public void addBookToArrayList(){ 
@@ -150,17 +156,75 @@ public class LibrarySystem {
         }
     }
 
-    /*************
-    === C-nivå ===
-    *************/
+
+
+    /***************************************
+    ================ C-nivå ================
+    ****************************************/
+
+
 
     //Hämta alla användare från servern
     public boolean getUsersFromServer(){
+        //Försök hämta användre
+        try {
+            response = Unirest.get(baseURL + "users").asString();
+        } catch (UnirestException e) {
+            IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
+            return false;
+        }
+
+        //Kolla status
+        status = response.getStatus();
+        if (status != 200) {
+            IO.println("Fel från server! Statuskod: " + status);
+            return false;
+        }
+
+        //Hämta själva informationen för användarna
+        body = response.getBody();
+
+        //Översätt JSON-texten till en ArrayList av Användar-objektet
+        Type userType = new TypeToken<ArrayList<User>>(){}.getType();
+        //Lägg till i lista, sedan loopa igenom listan för att lägga till i samlingen av användare
+        ArrayList<User> jsonUsers = gson.fromJson(body, userType);
+        for (User user : jsonUsers) {
+            users.add(user);
+        }
+        
+        IO.println("Hämtning av användare lyckad! Antal användare hämtade: " + jsonUsers.size());
         return true;
     }
 
     //Hämta alla avstängda användare från servern
     public boolean getSuspendedUsersFromServer(){
+        //Försök hämta avstängda användare
+        try {
+            response = Unirest.get(baseURL + "suspended").asString();
+        } catch (UnirestException e) {
+            IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
+            return false;
+        }
+
+        //Kolla status
+        status = response.getStatus();
+        if (status != 200) {
+            IO.println("Fel från server! Statuskod: " + status);
+            return false;
+        }
+
+        //Hämta själva informationen för de avstända 
+        body = response.getBody();
+
+        //Översätt JSON-texten till en ArrayList av Användar-objektet
+        Type suspendedUserType = new TypeToken<ArrayList<SuspendedUser>>(){}.getType();
+        //Lägg till i lista, sedan loopa igenom listan för att lägga till i samlingen av användare
+        ArrayList<SuspendedUser> jsonSuspendedUsers = gson.fromJson(body, suspendedUserType);
+        for (SuspendedUser suspendedUser : jsonSuspendedUsers) {
+            suspendedUsers.add(suspendedUser);
+        }
+        
+        IO.println("Hämtning av avstängda användare lyckad! Antal avstängda användare hämtade: " + jsonSuspendedUsers.size());
         return true;
     }
 
@@ -199,7 +263,7 @@ public class LibrarySystem {
     public boolean getOneMagazineFromServer(){
         String id = IO.readln("Ange ID på tidningen: ");
         
-        //Försök hämta boken
+        //Försök hämta tidningen
         try {
             response = Unirest.get(baseURL + "magazines/" + id).asString();
         } catch (UnirestException e) {
@@ -214,10 +278,10 @@ public class LibrarySystem {
             return false;
         }
 
-        //Hämta själva informationen för boken
+        //Hämta själva informationen för tidningen
         body = response.getBody();
 
-        //Översätt JSON-texten till ett Book-objekt av boken och lägg till i samlingen       
+        //Översätt JSON-texten till ett Magazine-objekt av tidningen och lägg till i samlingen       
         Magazine jsonMagazine = gson.fromJson(body, Magazine.class);
         magazines.add(jsonMagazine);
         
@@ -227,11 +291,61 @@ public class LibrarySystem {
 
     //Hämta en användare från servern
     public boolean getOneUserFromServer(){
+        String id = IO.readln("Ange ID på användaren: ");
+        
+        //Försök hämta användare
+        try {
+            response = Unirest.get(baseURL + "users/" + id).asString();
+        } catch (UnirestException e) {
+            IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
+            return false;
+        }
+
+        //Kolla status
+        status = response.getStatus();
+        if (status != 200) {
+            IO.println("Fel från server! Statuskod: " + status);
+            return false;
+        }
+
+        //Hämta själva informationen för användare
+        body = response.getBody();
+
+        //Översätt JSON-texten till ett user-objekt av användaren och lägg till i samlingen       
+        User jsonUser = gson.fromJson(body, User.class);
+        users.add(jsonUser);
+        
+        IO.println("Hämtning av användare (ID: " + id + ") lyckad!");
         return true;
     }
 
     //Hämta en avstängd användare från servern
     public boolean getOneSuspendedUserFromServer(){
+        String id = IO.readln("Ange ID på avstängd användare: ");
+        
+        //Försök hämta avstängda
+        try {
+            response = Unirest.get(baseURL + "suspended/" + id).asString();
+        } catch (UnirestException e) {
+            IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
+            return false;
+        }
+
+        //Kolla status
+        status = response.getStatus();
+        if (status != 200) {
+            IO.println("Fel från server! Statuskod: " + status);
+            return false;
+        }
+
+        //Hämta själva informationen för avstängda
+        body = response.getBody();
+
+        //Översätt JSON-texten till ett SuspendedUser-objekt av den avstängda och lägg till i samlingen       
+        SuspendedUser jsonSuspendedUser = gson.fromJson(body, SuspendedUser.class);
+        suspendedUsers.add(jsonSuspendedUser);
+        
+        IO.println("Hämtning av avständ användare (ID: " + id + ") lyckad!");
         return true;
     }
 
@@ -273,9 +387,15 @@ public class LibrarySystem {
     public boolean canUserBorrow(){
         return true;
     }
-    /************
-    === A-nivå ===
-    *************/
 
+
+
+    /***************************************
+    ================ A-nivå ================
+    ****************************************/
+
+
+
+    //Börja här
     
 }
