@@ -29,12 +29,17 @@ public class LibrarySystem {
     HttpResponse<String> response;
     int status;
     String body;
+    String jsonBody;
 
-    //Variabler för ID för nya böcker och tidningar samt användare
-    int iBook = 1;
-    int iMagazine = 1;
-    int iUser = 1;
-    int iSuspendedUser = 1;
+    public int checkChoice(){
+        int val = 0;
+       try {
+            val = Integer.parseInt(IO.readln("Ange alternativ: "));
+       } catch (Exception e) {
+            return val;
+       }
+        return val;
+    }
 
 
 
@@ -48,46 +53,76 @@ public class LibrarySystem {
     public void addBook(){ 
         //Be användaren mata in info om boken
         String title = IO.readln("Ange titel: ");
-        String id = String.valueOf(100 + iBook);
 
         String author = IO.readln("Ange författare: ");
         String genre = IO.readln("Ange genre: ");
         int pages = Integer.parseInt(IO.readln("Ange antal sidor: "));
 
         //Skapa ny bok med informationen och lägg till i listan
-        Book newBook = new Book(id, title, true, author, genre, pages);
+        Book newBook = new Book(null, title, true, author, genre, pages);
         books.add(newBook);
         IO.println("\nBoken har lagts till i listan: \n" + newBook.getInfo());
-        iBook++;
         /***********
         ** C-NIVÅ **
         ***********/
 
         //TODO Ladda upp på server
 
+        jsonBody = gson.toJson(newBook);
+        try {
+            response = Unirest.post(baseURL + "books")
+                .header("Content-Type", "application/json")
+                .body(jsonBody)
+                .asString(); //Returnerar ett HTTPResponse<String>
+            
+        } catch (UnirestException e) {
+            IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
+            return;
+        }
+
+        status = response.getStatus();
+        if (status != 200 && status != 201) {
+            IO.println("Fel från server: " + status);
+            return;
+        }
+
+        try {
+            body = response.getBody();
+            Book responseBook = gson.fromJson(body, Book.class);
+            IO.println("Sparat till server: " + responseBook);
+            //users.add(responseUser);
+            IO.println("\nAnvändaren har lagts till i listan: \n" + responseBook.toString());
+        } catch (Exception e) {
+            IO.println("Knas");
+        }
+
+        //TODO skriv ut riktiga föremålet och lägg till i listan (ta bort tidigare)
     }
+
+    
 
     //Skapa ny tidning och lägg till i listan
     public void addMagazine(){ 
         //Be användaren mata in info om tidningen
         String title = IO.readln("Ange titel: ");
-        String id = String.valueOf(10 + iMagazine);
 
         int issueNumber = Integer.parseInt(IO.readln("Ange utgåvonummer: "));
         String category = IO.readln("Ange kategori: ");
         int publishedYear = Integer.parseInt(IO.readln("Ange publicerat år: "));
 
         //Skapa och lägg till tidningen i listan
-        Magazine newMagazine = new Magazine(id, title, true, issueNumber, category, publishedYear);
+        Magazine newMagazine = new Magazine(null, title, true, issueNumber, category, publishedYear);
         magazines.add(newMagazine);
         IO.println("\nTidningen har lagts till i listan: \n" + newMagazine.getInfo());
-        iMagazine++;
         /***********
         ** C-NIVÅ **
         ***********/
 
         //TODO Ladda upp på server
+
+        //TODO skriv ut riktiga föremålet och lägg till i listan (ta bort tidigare)
     }
+        
 
     //Hämta alla böcker från servern
     public boolean getBooksFromServer(){ ///hade inte med i planering!!!!
@@ -369,17 +404,65 @@ public class LibrarySystem {
     public void addUser(){ 
         //Be användaren mata in info om user
         String name = IO.readln("Ange namn: ");
-        String id = String.valueOf(102 + iBook);
 
         String email = IO.readln("Ange email: ");
 
         //Skapa ny användare med informationen och lägg till i listan
-        User newUser = new User(id, name, email);
-        users.add(newUser);
-        IO.println("\nAnvändaren har lagts till i listan: \n" + newUser.toString());
-        iUser++;
+        User newUser = new User(null, name, email);
+        
 
         //TODO Ladda upp på server
+
+        HttpResponse<String> postResponse;
+        String postBody;
+        jsonBody = gson.toJson(newUser);
+        try {
+            postResponse = Unirest.post(baseURL + "users")
+                .header("Content-Type", "application/json")
+                .body(jsonBody)
+                .asString(); //Returnerar ett HTTPResponse<String>
+            
+        } catch (UnirestException e) {
+            IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
+            return;
+        }
+
+        IO.println(postBody = postResponse.getBody());
+
+        status = postResponse.getStatus();
+        if (status != 200 && status != 201 && status != 500) {
+            IO.println("Fel från server: " + status);
+            return;
+        }
+        if (status == 500) {
+            IO.println("Status: 500");
+        }
+
+        ///TODO idk man
+        try {
+             postBody = postResponse.getBody();
+        User responseUser = gson.fromJson(postBody, User.class);
+        IO.println("Sparat till server: " + responseUser);
+        users.add(responseUser);
+        IO.println("\nAnvändaren har lagts till i listan: \n" + responseUser.toString());
+        } catch (Exception e) {
+            IO.println("Knas");
+        }
+       
+    }
+
+    //Skapa ny avstängd använadre och lägg till i listan och på server
+    public void addSuspendedUser(){ 
+        String userId = IO.readln("Ange användar-ID: ");
+
+        //Skapa ny användare med informationen och lägg till i listan
+        SuspendedUser newSuspendedUser = new SuspendedUser(null, userId);
+        suspendedUsers.add(newSuspendedUser);
+        IO.println("\nAvstängd användare har lagts till i listan: \n" + newSuspendedUser.toString());
+
+        //TODO Ladda upp på server
+
+        //TODO skriv ut riktiga föremålet och lägg till i listan (ta bort tidigare)
 
     }
 

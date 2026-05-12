@@ -6,7 +6,7 @@ public class User {
     private String id;
     private String name;
     private String email;
-    private ArrayList<Borrowable> borrowedItems;
+    private transient ArrayList<Borrowable> borrowedItems = new ArrayList<>();
 
     /***KONSTRUKTOR***/
     public User(String id, String name, String email){
@@ -14,6 +14,8 @@ public class User {
         this.name = name;
         this.email = email;
     }
+
+    public User(){};
 
     /***GETTERS***/
     public String getId() {
