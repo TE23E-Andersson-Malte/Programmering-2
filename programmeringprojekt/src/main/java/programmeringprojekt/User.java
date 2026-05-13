@@ -2,7 +2,7 @@ package programmeringprojekt;
 
 import java.util.ArrayList;
 
-public class User {
+public class User implements Comparable<User>{
     private String id;
     private String name;
     private String email;
@@ -56,5 +56,11 @@ public class User {
     public String toString(){
         return "USER | ID: " + id + " | Name: " + name +
          " | Email: " + email + " | Borrowed items: " + borrowedItems;
+    }
+
+    /***Compare to***/
+    @Override
+    public int compareTo(User other) {
+        return this.name.compareToIgnoreCase(other.name);
     }
 }

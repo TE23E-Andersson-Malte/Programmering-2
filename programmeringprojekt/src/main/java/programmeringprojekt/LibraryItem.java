@@ -1,5 +1,7 @@
 package programmeringprojekt;
 
+import java.security.PublicKey;
+
 /*
  * Malte Andersson
  * Filen innehåller den abstrakta klassen LibraryItem (biblioteksförenål)
@@ -10,7 +12,7 @@ package programmeringprojekt;
  * Eftersom LibraryItem är abstrkt kan inga objekt av denna klass skapas direkt, utan endast genom dess subklasser
  */
 
-public abstract class LibraryItem {
+public abstract class LibraryItem implements Comparable<LibraryItem>{
     protected String id;
     protected String title;
     protected boolean isAvailable;
@@ -39,6 +41,11 @@ public abstract class LibraryItem {
     public void setIsAvailable(boolean isAvailable){
         this.isAvailable = isAvailable;
     }
+
+    //COMPARE TO metod
+    public int compareTo(LibraryItem other){
+        return this.title.compareToIgnoreCase(other.title);
+    };
 
     //GET INFO
     public abstract String getInfo();

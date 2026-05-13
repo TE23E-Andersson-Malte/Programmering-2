@@ -23,8 +23,9 @@ public class Main {
                     3. Hämta användare
                     4. Skriv ut böcker
                     5. Skriv ut tidningar
-                    6. Skapa nytt
-                    7. Avsluta
+                    6. Skriv ut användare
+                    7. Skapa nytt
+                    8. Avsluta
                     """);
             val = bibliotek.checkChoice();
             if (val < 1 || val > 7) {
@@ -118,6 +119,29 @@ public class Main {
                         break;
                     case 6:
                         IO.println("""
+                                === SKRIV UT ANVÄNDARE ===
+                                1. Skriv ut användare
+                                2. Skriv ut användare sorterat (efter namn)
+                                3. Skriv ut avstängda användare
+                                4. Gå tillbaka
+                                """);
+                                val = bibliotek.checkChoice();
+                            if (val >= 1 && val <= 4) {
+                            IO.println("\n----------------------------------------------------\n");
+                            switch (val) {
+                                case 1 -> bibliotek.printUsers();
+                                case 2 -> bibliotek.printUsersSorted();
+                                case 3 -> bibliotek.printSuspendedUser();
+                                case 4 -> {break;}
+                                default -> {break;}
+                            }
+                            break;
+                        } else {
+                            IO.println("\nOgiltigt val! Försök igen...");
+                        }
+                        break;
+                    case 7:
+                        IO.println("""
                                 === SKAPA NYTT OCH LÄGG TILL===
                                 1. Skapa och lägg till bok
                                 2. Skapa och lägg till tidning
@@ -141,7 +165,7 @@ public class Main {
                             IO.println("\nOgiltigt val! Försök igen...");
                         }
                         break;
-                    case 7:
+                    case 8:
                         IO.println("Avslutar...\n");
                         loop = false;
                         break;
