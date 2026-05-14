@@ -46,6 +46,8 @@ public class LibrarySystem {
      * ================ E-nivå ================
      ***************************************/
 
+     //TODO städa och kommentera
+
     // Skapa ny bok och lägg till i listan
     public void addBook() {
         // Be användaren mata in info om boken
@@ -76,10 +78,6 @@ public class LibrarySystem {
             return;
         }
 
-        body = response.getBody();
-
-        IO.println(body);
-
         status = response.getStatus();
         if (status != 200 && status != 201 && status != 500) {
             IO.println("Fel från server: " + status);
@@ -87,11 +85,10 @@ public class LibrarySystem {
         }
         if (status == 500) {
             IO.println("Status: 500");
+            IO.println(response.getBody());
         }
 
-        /// TODO idk man
-                // TODO skriv ut riktiga föremålet och lägg till i listan (ta bort tidigare)
-
+        //Funkar inte pga status 500
         try {
             body = response.getBody();
             Book responseBook = gson.fromJson(body, Book.class);
@@ -101,8 +98,9 @@ public class LibrarySystem {
         } catch (Exception e) {
             IO.println("Knas: " + e.getLocalizedMessage());
         }
-
-        // TODO skriv ut riktiga föremålet och lägg till i listan (ta bort tidigare)
+        
+        getBooksFromServer();
+        IO.println("Boken lades till");
     }
 
     // Skapa ny tidning och lägg till i listan
@@ -147,11 +145,10 @@ public class LibrarySystem {
         }
         if (status == 500) {
             IO.println("Status: 500");
+            IO.println(response.getBody());
         }
 
-        /// TODO idk man
-                // TODO skriv ut riktiga föremålet och lägg till i listan (ta bort tidigare)
-
+        //Funkar inte pga status 500
         try {
             body = response.getBody();
             Magazine responseMagazine = gson.fromJson(body, Magazine.class);
@@ -161,8 +158,9 @@ public class LibrarySystem {
         } catch (Exception e) {
             IO.println("Knas");
         }
-
-        // TODO skriv ut riktiga föremålet och lägg till i listan (ta bort tidigare)
+        
+        getMagazinesFromServer();
+        IO.println("Tidningen lades till");
     }
 
     // Hämta alla böcker från servern
@@ -186,14 +184,18 @@ public class LibrarySystem {
         body = response.getBody();
 
         // Översätt JSON-texten till en ArrayList av Book-objektet
-        Type bookType = new TypeToken<ArrayList<Book>>() {
-        }.getType();
+        Type bookType = new TypeToken<ArrayList<Book>>() {}.getType();
         // Lägg till i lista, sedan loopa igenom listan för att lägga till i samlingen
         // av böcker
         ArrayList<Book> jsonBooks = gson.fromJson(body, bookType);
+
+        books.clear();
+        books.addAll(jsonBooks);
+
+        /*
         for (Book book : jsonBooks) {
             books.add(book);
-        }
+        }*/
 
         IO.println("Hämtning av böcker lyckad! Antal böcker hämtade: " + jsonBooks.size());
         return true;
@@ -225,9 +227,14 @@ public class LibrarySystem {
         // Lägg till i lista, sedan loopa igenom listan för att lägga till i samlingen
         // av tidningar
         ArrayList<Magazine> jsonMagazines = gson.fromJson(body, magazineType);
+
+        magazines.clear();
+        magazines.addAll(jsonMagazines);
+
+        /* 
         for (Magazine magazine : jsonMagazines) {
             magazines.add(magazine);
-        }
+        }*/
 
         IO.println("Hämtning av tidningar lyckad! Antal tidningar hämtade: " + jsonMagazines.size());
         return true;
@@ -279,9 +286,14 @@ public class LibrarySystem {
         // Lägg till i lista, sedan loopa igenom listan för att lägga till i samlingen
         // av användare
         ArrayList<User> jsonUsers = gson.fromJson(body, userType);
+
+        users.clear();
+        users.addAll(jsonUsers);
+
+        /*
         for (User user : jsonUsers) {
             users.add(user);
-        }
+        }*/
 
         IO.println("Hämtning av användare lyckad! Antal användare hämtade: " + jsonUsers.size());
         return true;
@@ -313,9 +325,14 @@ public class LibrarySystem {
         // Lägg till i lista, sedan loopa igenom listan för att lägga till i samlingen
         // av användare
         ArrayList<SuspendedUser> jsonSuspendedUsers = gson.fromJson(body, suspendedUserType);
+
+        suspendedUsers.clear();
+        suspendedUsers.addAll(jsonSuspendedUsers);
+
+        /*
         for (SuspendedUser suspendedUser : jsonSuspendedUsers) {
             suspendedUsers.add(suspendedUser);
-        }
+        }*/
 
         IO.println("Hämtning av avstängda användare lyckad! Antal avstängda användare hämtade: "
                 + jsonSuspendedUsers.size());
@@ -346,7 +363,7 @@ public class LibrarySystem {
 
         // Översätt JSON-texten till ett Book-objekt av boken och lägg till i samlingen
         Book jsonBook = gson.fromJson(body, Book.class);
-        books.add(jsonBook);
+        books.add(jsonBook); //TODO ????
 
         IO.println("Hämtning av bok (ID: " + id + ") lyckad!");
         return true;
@@ -377,7 +394,7 @@ public class LibrarySystem {
         // Översätt JSON-texten till ett Magazine-objekt av tidningen och lägg till i
         // samlingen
         Magazine jsonMagazine = gson.fromJson(body, Magazine.class);
-        magazines.add(jsonMagazine);
+        magazines.add(jsonMagazine); //TODO ????
 
         IO.println("Hämtning av tidning (ID: " + id + ") lyckad!");
         return true;
@@ -408,7 +425,7 @@ public class LibrarySystem {
         // Översätt JSON-texten till ett user-objekt av användaren och lägg till i
         // samlingen
         User jsonUser = gson.fromJson(body, User.class);
-        users.add(jsonUser);
+        users.add(jsonUser); //TODO ????
 
         IO.println("Hämtning av användare (ID: " + id + ") lyckad!");
         return true;
@@ -439,7 +456,7 @@ public class LibrarySystem {
         // Översätt JSON-texten till ett SuspendedUser-objekt av den avstängda och lägg
         // till i samlingen
         SuspendedUser jsonSuspendedUser = gson.fromJson(body, SuspendedUser.class);
-        suspendedUsers.add(jsonSuspendedUser);
+        suspendedUsers.add(jsonSuspendedUser); //TODO ????
 
         IO.println("Hämtning av avständ användare (ID: " + id + ") lyckad!");
         return true;
@@ -472,10 +489,6 @@ public class LibrarySystem {
             return;
         }
 
-        body = response.getBody();
-
-        IO.println(body);
-
         status = response.getStatus();
         if (status != 200 && status != 201 && status != 500) {
             IO.println("Fel från server: " + status);
@@ -483,10 +496,8 @@ public class LibrarySystem {
         }
         if (status == 500) {
             IO.println("Status: 500");
+            IO.println(response.getBody());
         }
-
-        /// TODO idk man
-                // TODO skriv ut riktiga föremålet och lägg till i listan (ta bort tidigare)
 
         try {
             body = response.getBody();
@@ -497,6 +508,9 @@ public class LibrarySystem {
         } catch (Exception e) {
             IO.println("Knas");
         }
+
+        getUsersFromServer();
+        IO.println("Användaren lades till");
 
     }
 
@@ -523,10 +537,6 @@ public class LibrarySystem {
             return;
         }
 
-        body = response.getBody();
-
-        IO.println(body);
-
         status = response.getStatus();
         if (status != 200 && status != 201 && status != 500) {
             IO.println("Fel från server: " + status);
@@ -534,32 +544,88 @@ public class LibrarySystem {
         }
         if (status == 500) {
             IO.println("Status: 500");
+            IO.println(response.getBody());
         }
 
+        try {
+            body = response.getBody();
+            SuspendedUser responseSuspendedUser = gson.fromJson(body, SuspendedUser.class);
+            IO.println("Sparat till server: " + responseSuspendedUser);
+            suspendedUsers.add(responseSuspendedUser);
+            IO.println("\nAvstängda användaren har lagts till i listan: \n" + responseSuspendedUser.toString());
+        } catch (Exception e) {
+            IO.println("Knas");
+        }
 
-        // TODO skriv ut riktiga föremålet och lägg till i listan (ta bort tidigare)
+        getSuspendedUsersFromServer();
+        IO.println("Avstängda användaren lades till");
 
     }
 
     // Hitta en kund med hjälp av email-adress
     public void findUser() {
+        String email = IO.readln("Ange användarens email: ");
 
+        for (User u : users) {
+            if (u.getEmail().equalsIgnoreCase(email)) {
+                IO.println("Kund hittad!");
+                IO.println(u.toString());
+                return;
+            }
+        }
+
+        IO.println("Ingen kund med emailen hittades...");
     }
 
     // Hitta en bok med hjälp av titel
     public void findBook() {
+        String title = IO.readln("Ange bokens titel: ");
 
+        for (Book b : books) {
+            if (b.getTitle().equalsIgnoreCase(title)) {
+                IO.println("Bok hittad!");
+                IO.println(b.getInfo());
+                return;
+            }
+        }
+
+        IO.println("Ingen bok med titeln hittades...");
     }
 
     // Hitta en tidning med hjälp av titel
     public void findMagazine() {
+        String title = IO.readln("Ange tidningens titel: ");
+
+        for (Magazine m : magazines) {
+            if (m.getTitle().equalsIgnoreCase(title)) {
+                IO.println("Tidning hittad!");
+                IO.println(m.getInfo());
+                return;
+            }
+        }
+
+        IO.println("Ingen tidning med titeln hittades...");
+    }
+
+    //Ta bort bok från server
+    public void removeBook(){
 
     }
 
-    // TODO
-    // Ta bort böcker/tidningar/kund/avstängd på server med hjälp av title och ta
-    // bort på server.
-    // Ta bort kund med hjälp av email och avstängd med id på server.
+    //Ta bort tidning från server
+    public void removeMagazine(){
+
+    }
+
+    //TA bort användare från server
+    public void removeUser(){
+
+    }
+
+    //Ta bort användare från server
+    public void removeSuspendedUser(){
+
+    }
 
     //Skriv ut böcker sorterat
     public void printBooksSorted() {
@@ -602,8 +668,34 @@ public class LibrarySystem {
         }
     }
 
+    //Kolla om användaren får låna
     public boolean canUserBorrow() {
-        return true;
+        String id = IO.readln("Ange ID:t på användaren: ");
+        User foundUser = null;
+        //Loopa igenom alla användare
+        for (User u : users) {
+            if (u.getId().equals(id)) {
+                foundUser = u;
+                break;
+            }
+        }
+
+        //Om användaren inte finns
+        if (foundUser == null) {
+            IO.println("Ingen användare med ID:t finns...");
+            return false;
+        }
+
+        //Kolla om det finns en suspended user med userId = id
+        for (SuspendedUser s : suspendedUsers) {
+            if (s.getUserId().equals(id)) {
+                IO.println("Användaren är avstängd och får inte låna!");   
+                return false;
+            }
+        }
+
+        IO.print("Användaren får låna!");
+        return true;    
     }
 
     /***************************************

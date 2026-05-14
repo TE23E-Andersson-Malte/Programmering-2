@@ -18,17 +18,20 @@ public class Main {
             val = 0;
             IO.println("""
                     \n==== BIBLIOTEK ====
-                    1. Hämta böcker
-                    2. Hämta tidningar
-                    3. Hämta användare
+                    1. Hämta böcker 
+                    2. Hämta tidningar 
+                    3. Hämta användare 
                     4. Skriv ut böcker
                     5. Skriv ut tidningar
                     6. Skriv ut användare
                     7. Skapa nytt
-                    8. Avsluta
+                    8. Kan användaren låna?
+                    9. Hitta
+                    10. Ta bort
+                    11. Avsluta
                     """);
             val = bibliotek.checkChoice();
-            if (val < 1 || val > 7) {
+            if (val < 1 || val > 11) {
                 IO.println("\nOgiltigt val! Försök igen...");
             } else {
 
@@ -36,8 +39,6 @@ public class Main {
 
                 switch (val) {
                     // TODO Undermenyer
-
-                    // Undermeny för hämta böcker
                     case 1:
                         IO.println("""
                                 === HÄMTA BÖCKER ===
@@ -112,10 +113,46 @@ public class Main {
                     //TODO 
                     //Undermeny för att skriva ut böcker
                     case 4:
-                        bibliotek.printBooks();
+                         IO.println("""
+                                === SKRIV UT BÖCKER ===
+                                1. Skriv ut böcker
+                                2. Skriv ut böcker sorterat (efter title)
+                                3. Gå tillbaka
+                                """);
+                                val = bibliotek.checkChoice();
+                            if (val >= 1 && val <= 3) {
+                            IO.println("\n----------------------------------------------------\n");
+                            switch (val) {
+                                case 1 -> bibliotek.printBooks();
+                                case 2 -> bibliotek.printBooksSorted();
+                                case 3 -> {break;}
+                                default -> {break;}
+                            }
+                            break;
+                        } else {
+                            IO.println("\nOgiltigt val! Försök igen...");
+                        }
                         break;
                     case 5:
-                        bibliotek.printMagazines();
+                        IO.println("""
+                                === SKRIV UT TIDNINGAR ===
+                                1. Skriv ut tidningar
+                                2. Skriv ut tidningar sorterat (efter title)
+                                3. Gå tillbaka
+                                """);
+                                val = bibliotek.checkChoice();
+                            if (val >= 1 && val <= 3) {
+                            IO.println("\n----------------------------------------------------\n");
+                            switch (val) {
+                                case 1 -> bibliotek.printMagazines();
+                                case 2 -> bibliotek.printMagazinesSorted();
+                                case 3 -> {break;}
+                                default -> {break;}
+                            }
+                            break;
+                        } else {
+                            IO.println("\nOgiltigt val! Försök igen...");
+                        }
                         break;
                     case 6:
                         IO.println("""
@@ -166,6 +203,57 @@ public class Main {
                         }
                         break;
                     case 8:
+                        bibliotek.canUserBorrow();
+                        break;
+                    case 9: 
+                        IO.println("""
+                                === Hitta ===
+                                1. Hitta bok
+                                2. Hitta tidning
+                                3. Hitta användare
+                                4. Gå tillbaka
+                                """);
+                        val = bibliotek.checkChoice();
+                        if (val >= 1 && val <= 4) {
+                            IO.println("\n----------------------------------------------------\n");
+                            switch (val) {
+                                case 1 -> bibliotek.findBook();
+                                case 2 -> bibliotek.findMagazine();
+                                case 3 -> bibliotek.findUser();
+                                case 4 -> {break;}
+                                default -> {break;}
+                            }
+                            break;
+                        } else {
+                            IO.println("\nOgiltigt val! Försök igen...");
+                        }
+                        break;
+                    case 10: 
+                        IO.println("""
+                                === Ta bort ===
+                                1. Ta bort bok
+                                2. Ta bort tidning
+                                3. Ta bort användare 
+                                4. Ta bort avstängd användare
+                                5. Gå tillbaka
+                                """);
+                        val = bibliotek.checkChoice();
+                        if (val >= 1 && val <= 5) {
+                            IO.println("\n----------------------------------------------------\n");
+                            switch (val) {
+                                case 1 -> bibliotek.removeBook();
+                                case 2 -> bibliotek.removeMagazine();
+                                case 3 -> bibliotek.removeUser();
+                                case 4 -> bibliotek.removeSuspendedUser();
+                                case 5 -> {break;}
+                                default -> {break;}
+                            }
+                            break;
+                        } else {
+                            IO.println("\nOgiltigt val! Försök igen...");
+                        }
+                        break;
+                    case 11:
                         IO.println("Avslutar...\n");
                         loop = false;
                         break;
