@@ -20,7 +20,7 @@ public class Main {
             val = 0;
             IO.println("""
                     \n==== BIBLIOTEK ====
-                    1. Hämta böcker 
+                    1. Hämta böcker
                     2. Hämta tidningar 
                     3. Hämta användare 
                     4. Skriv ut böcker
