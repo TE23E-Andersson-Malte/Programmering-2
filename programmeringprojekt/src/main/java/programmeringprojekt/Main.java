@@ -1,5 +1,7 @@
 package programmeringprojekt;
 
+import kong.unirest.Unirest;
+
 /*
 * Malte Andersson
 * Filen där menyn för programmet körs
@@ -256,6 +258,7 @@ public class Main {
                     case 11:
                         IO.println("Avslutar...\n");
                         loop = false;
+                        Unirest.shutDown();
                         break;
                     default:
                         break;

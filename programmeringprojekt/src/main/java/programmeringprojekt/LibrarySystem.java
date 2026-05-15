@@ -242,6 +242,7 @@ public class LibrarySystem {
 
     // Skriv ut böcker
     public void printBooks() {
+        IO.println("***** Alla böcker *****");
         // Loopa igenom listan med böcker och skriv ut varje bok på en rad
         for (Book book : books) {
             IO.println(book.getInfo());
@@ -250,6 +251,7 @@ public class LibrarySystem {
 
     // Skriv ut tidningar
     public void printMagazines() {
+        IO.println("***** Alla tidningar *****");
         // Loopa igenom listan med tidningar och skriv ut
         for (Magazine magazine : magazines) {
             IO.println(magazine.getInfo());
@@ -609,22 +611,90 @@ public class LibrarySystem {
 
     //Ta bort bok från server
     public void removeBook(){
+        String title = IO.readln("Ange titel på boken som ska tas bort: ");
 
+        try {
+            status = Unirest.delete(baseURL + "books/" + title)
+                .asEmpty() //Skickar ingen body
+                .getStatus();
+        } catch (UnirestException e) {
+            IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
+            return;
+        }
+
+        if (status == 200) {
+            IO.println("Boken med titeln: " + title + " togs bort!");
+        } else if (status == 204){
+            IO.println("Boken finns inte kvar / inget innehåll med titeln: " + title);
+        } else {
+            IO.println("Något gick snett. Status: " + status);
+        }
     }
 
     //Ta bort tidning från server
     public void removeMagazine(){
+        String title = IO.readln("Ange titel på tidningen som ska tas bort: ");
 
+        try {
+            status = Unirest.delete(baseURL + "magazines/" + title)
+                .asEmpty() //Skickar ingen body
+                .getStatus();
+        } catch (UnirestException e) {
+            IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
+            return;
+        }
+
+        if (status == 200) {
+            IO.println("Tidningen med titeln: " + title + " togs bort!");
+        } else if (status == 204){
+            IO.println("Tidningen finns inte kvar / inget innehåll med titeln: " + title);
+        } else {
+            IO.println("Något gick snett. Status: " + status);
+        }
     }
 
     //TA bort användare från server
     public void removeUser(){
+        String email = IO.readln("Ange email på användaren som ska tas bort: ");
 
+        try {
+            status = Unirest.delete(baseURL + "users/" + email)
+                .asEmpty() //Skickar ingen body
+                .getStatus();
+        } catch (UnirestException e) {
+            IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
+            return;
+        }
+
+        if (status == 200) {
+            IO.println("Användaren med emailen: " + email + " togs bort!");
+        } else if (status == 204){
+            IO.println("Användaren finns inte kvar / inget innehåll med emailen: " + email);
+        } else {
+            IO.println("Något gick snett. Status: " + status);
+        }
     }
 
     //Ta bort användare från server
     public void removeSuspendedUser(){
+        String id = IO.readln("Ange ID på avstängda användaren som ska tas bort: ");
 
+        try {
+            status = Unirest.delete(baseURL + "suspended/" + id)
+                .asEmpty() //Skickar ingen body
+                .getStatus();
+        } catch (UnirestException e) {
+            IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
+            return;
+        }
+
+        if (status == 200) {
+            IO.println("Avstängda användaren med ID: " + id + " togs bort!");
+        } else if (status == 204){
+            IO.println("Avstängda användaren finns inte kvar / inget innehåll med ID: " + id);
+        } else {
+            IO.println("Något gick snett. Status: " + status);
+        }
     }
 
     //Skriv ut böcker sorterat
@@ -656,6 +726,7 @@ public class LibrarySystem {
 
     // Skriv ut användare
     public void printUsers() {
+        IO.println("***** Alla användare *****");
         for (User user : users) {
             IO.println(user.toString());
         }
@@ -663,6 +734,7 @@ public class LibrarySystem {
 
     // Skriv ut avstängda
     public void printSuspendedUser() {
+        IO.println("***** Alla avstängda användare *****");
         for (SuspendedUser s : suspendedUsers) {
             IO.println(s.toString());
         }
