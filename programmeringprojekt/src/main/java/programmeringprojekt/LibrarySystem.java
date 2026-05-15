@@ -2,7 +2,14 @@ package programmeringprojekt;
 
 /*
  * Malte Andersson
- * Library system hanterar alla funktioner inom biblioteket
+ * LibrarySystem är kärnan i bibliotekssystemet och ansvarar för all logik som rör hantering av böcker, tidningar, användare och avstängda
+ * Klassen kommunicerar med servern via HTTP-anrop (GET, POST, DELETE)
+ * och använder Gson för att översätta JSON-data till Java-objekt och tvärtom
+ * LibrarySystem använder sig av övriga klasser (Book, Magazine, User, SuspendedUser)
+ * och innehåller funktioner för att skapa, hämta, söka, sortera och ta bort objekt, 
+ * samt avgöra om användare får låna eller ej
+ * Klassen används av Main för att utföra alla menyval 
+ * och i grund och botten det som håller ihop hela applikationens funktionalitet  
  */
 
 import java.lang.reflect.Type;
@@ -17,7 +24,7 @@ import kong.unirest.HttpResponse;
 import kong.unirest.UnirestException;
 
 public class LibrarySystem {
-    // Listor för att lagra objekt
+    // Listor för att lagra böcker, tidningar, användare, avstängda för sig
     private List<Book> books = new ArrayList<>();
     private List<Magazine> magazines = new ArrayList<>();
     private List<User> users = new ArrayList<>();
@@ -39,24 +46,24 @@ public class LibrarySystem {
 
     // TODO städa och kommentera
 
-    // Skapa ny bok och lägg till i listan
+    // Metod för att skapa ny bok och lägg till i listan
     public void addBook() {
-        // Be användaren mata in info om boken
+        // Be användaren mata in information om boken
         String title = checkEmpty("Ange titel: ");
         String author = checkEmpty("Ange författare: ");
         String genre = checkEmpty("Ange genre: ");
         int pages = checkEmptyInt("Ange antal sidor: ");
 
-        // Skapa ny bok med informationen och lägg till i listan
+        // Skapa ny bok med informationen
         Book newBook = new Book(null, title, true, author, genre, pages);
 
         /***********
          ** C-NIVÅ **
          ***********/
 
-        // TODO Ladda upp på server
-
+        //Översätt informationen till JSON-format
         jsonBody = gson.toJson(newBook);
+        //Försök lägga till boken på servern, annars skicka undantag
         try {
             response = Unirest.post(baseURL + "books")
                     .header("Content-Type", "application/json")
@@ -68,17 +75,19 @@ public class LibrarySystem {
             return;
         }
 
+        //Hämta statuskod och kolla om den är OK, annars ge felmeddelande och avbryt
         status = response.getStatus();
         if (status != 200 && status != 201 && status != 500) {
             IO.println("Fel från server: " + status);
             return;
         }
+        //Servern bör inte ge statuskod 500, men har haft problem med att den ger det även fast boken laddas upp
         if (status == 500) {
             IO.println("Status: 500");
             IO.println(response.getBody());
         }
 
-        // Funkar inte pga status 500
+        //Försök läsa svaret från servern och skapa ett nytt objekt av boken för att se vilket ID den fick
         try {
             body = response.getBody();
             Book responseBook = gson.fromJson(body, Book.class);
@@ -87,6 +96,7 @@ public class LibrarySystem {
             IO.println("Fel: " + e.getLocalizedMessage());
         }
 
+        //Fråga om användaren vill synkronisera informationen på server till listan lokalt i programmet, då de inte gör det automatiskt
         boolean val = askYesNo("\nSynka böcker från server? (j/n): ");
         if (val) {
             IO.println("Hämtar böcker från server...");
@@ -97,7 +107,7 @@ public class LibrarySystem {
 
     }
 
-    // Skapa ny tidning och lägg till i listan
+    // Metod för att skapa en ny tidning och ladda upp på servern
     public void addMagazine() {
         // Be användaren mata in info om tidningen
         String title = checkEmpty("Ange titel: ");
@@ -105,38 +115,39 @@ public class LibrarySystem {
         String category = checkEmpty("Ange kategori: ");
         int publishedYear = checkEmptyInt("Ange publicerat år: ");
 
-        // Skapa och lägg till tidningen i listan
+        // Skapa en ny tidning
         Magazine newMagazine = new Magazine(null, title, true, issueNumber, category, publishedYear);
         
         /***********
          ** C-NIVÅ **
          ***********/
 
-        // TODO Ladda upp på server
-
+        //Omvandla tidningen till JSON-format
         jsonBody = gson.toJson(newMagazine);
+        //Försök lägg till tidningen på servern, annars skicka undantag
         try {
             response = Unirest.post(baseURL + "magazines")
                     .header("Content-Type", "application/json")
                     .body(jsonBody)
                     .asString(); // Returnerar ett HTTPResponse<String>
-
         } catch (UnirestException e) {
             IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
             return;
         }
 
+        //Hämta statuskod och kolla så att den är OK, annars skicka felmeddelande och avbryt
         status = response.getStatus();
         if (status != 200 && status != 201 && status != 500) {
             IO.println("Fel från server: " + status);
             return;
         }
+        //Servern bör inte ge statuskod 500, men har haft problem med att den ger det även fast tidningen laddas upp
         if (status == 500) {
             IO.println("Status: 500");
             IO.println(response.getBody());
         }
 
-        // Funkar inte pga status 500
+        //Försök läsa svaret från servern och skriv ut tidningen (med ID som servern skapade), skicka felmeddelande om det misslyckas
         try {
             body = response.getBody();
             Magazine responseMagazine = gson.fromJson(body, Magazine.class);
@@ -145,6 +156,7 @@ public class LibrarySystem {
             IO.println("Fel: " + e.getLocalizedMessage());
         }
 
+        //Fråga om användaren vill synkronisera informationen på server till listan lokalt i programmet, då de inte gör det automatiskt
         boolean val = askYesNo("\nSynka tidningar från server? (j/n): ");
         if (val) {
             IO.println("Hämtar tidningar från server...");
@@ -154,8 +166,8 @@ public class LibrarySystem {
         }
     }
 
-    // Hämta alla böcker från servern
-    public boolean getBooksFromServer() { /// hade inte med i planering!!!!
+    // Metod för att hämta alla böcker från servern
+    public boolean getBooksFromServer() { 
         // Försök hämta böckerna
         try {
             response = Unirest.get(baseURL + "books").asString();
@@ -164,7 +176,7 @@ public class LibrarySystem {
             return false;
         }
 
-        // Kolla status
+        // Kolla status och verifiera att den är OK, annars felmeddelande
         status = response.getStatus();
         if (status != 200) {
             IO.println("Fel från server! Statuskod: " + status);
@@ -175,16 +187,15 @@ public class LibrarySystem {
         body = response.getBody();
 
         // Översätt JSON-texten till en ArrayList av Book-objektet
-        Type bookType = new TypeToken<ArrayList<Book>>() {
-        }.getType();
-        // Lägg till i lista, sedan loopa igenom listan för att lägga till i samlingen
-        // av böcker
+        Type bookType = new TypeToken<ArrayList<Book>>() {}.getType();
+        // Lägg till i lista av böcker
         ArrayList<Book> jsonBooks = gson.fromJson(body, bookType);
 
+        //Uppdatera den lokala listan genom att ta bort nuvarande objekt och fyll på med hämtade objekt
         books.clear();
         books.addAll(jsonBooks);
 
-        /*
+        /* loopa igenom listan för att lägga till i samlingen
          * for (Book book : jsonBooks) {
          * books.add(book);
          * }
@@ -194,8 +205,8 @@ public class LibrarySystem {
         return true;
     }
 
-    // Hämta alla tidningar från servern
-    public boolean getMagazinesFromServer() { /// hade inte med i planering!!!!
+    //Metod för att hämta alla tidningar från servern
+    public boolean getMagazinesFromServer() {
         // Försök hämta tidningar
         try {
             response = Unirest.get(baseURL + "magazines").asString();
@@ -204,7 +215,7 @@ public class LibrarySystem {
             return false;
         }
 
-        // Kolla status
+        // Kolla status om den är OK
         status = response.getStatus();
         if (status != 200) {
             IO.println("Fel från server! Statuskod: " + status);
@@ -217,14 +228,14 @@ public class LibrarySystem {
         // Översätt JSON-texten till en ArrayList av Book-objektet
         Type magazineType = new TypeToken<ArrayList<Magazine>>() {
         }.getType();
-        // Lägg till i lista, sedan loopa igenom listan för att lägga till i samlingen
-        // av tidningar
+        // Lägg till i lista av tidningar
         ArrayList<Magazine> jsonMagazines = gson.fromJson(body, magazineType);
 
+        //Uppdatera den lokala listan genom att ta bort nuvarande objekt och fyll på med hämtade objekt
         magazines.clear();
         magazines.addAll(jsonMagazines);
 
-        /*
+        /* sedan loopa igenom listan för att lägga till i samlingen
          * for (Magazine magazine : jsonMagazines) {
          * magazines.add(magazine);
          * }
@@ -234,7 +245,7 @@ public class LibrarySystem {
         return true;
     }
 
-    // Skriv ut böcker
+    // Metod för att skriva ut böcker
     public void printBooks() {
         IO.println("***** Alla böcker *****");
         // Loopa igenom listan med böcker och skriv ut varje bok på en rad
@@ -243,7 +254,7 @@ public class LibrarySystem {
         }
     }
 
-    // Skriv ut tidningar
+    //Metod för att skriva ut tidningar
     public void printMagazines() {
         IO.println("***** Alla tidningar *****");
         // Loopa igenom listan med tidningar och skriv ut

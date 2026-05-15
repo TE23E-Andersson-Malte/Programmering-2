@@ -4,7 +4,11 @@ import kong.unirest.Unirest;
 
 /*
 * Malte Andersson
-* Filen där menyn för programmet körs
+* Klassen main ansvarar för visa huvudmenyn och dess undermenyer 
+samt ansvarar för användarens val.
+Main skapar ett LibrarySystem-objekt och anropar dess metoder beroende på användarens val i menyn
+Klassen hanterar programloopen och ser till att användaren för tydlig feedback vid varje val
+Main innehåller ingen logik utan fungerar endast som vägen mellan användaren och Librarysystem
 */
 
 public class Main {
