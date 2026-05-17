@@ -44,7 +44,6 @@ public class Main {
                 IO.println("\n----------------------------------------------------\n");
 
                 switch (val) {
-                    // TODO Undermenyer
                     case 1:
                         IO.println("""
                                 === HÄMTA BÖCKER ===
@@ -116,8 +115,6 @@ public class Main {
                         }
                         break;
 
-                    //TODO 
-                    //Undermeny för att skriva ut böcker
                     case 4:
                          IO.println("""
                                 === SKRIV UT BÖCKER ===
