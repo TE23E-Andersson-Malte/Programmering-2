@@ -213,7 +213,7 @@ public class Main {
                         break;
                     case 9: 
                         IO.println("""
-                                === Hitta ===
+                                === HITTA ===
                                 1. Hitta bok
                                 2. Hitta tidning
                                 3. Hitta användare
@@ -236,7 +236,7 @@ public class Main {
                         break;
                     case 10: 
                         IO.println("""
-                                === Ta bort ===
+                                === TA BORT ===
                                 1. Ta bort bok
                                 2. Ta bort tidning
                                 3. Ta bort användare 

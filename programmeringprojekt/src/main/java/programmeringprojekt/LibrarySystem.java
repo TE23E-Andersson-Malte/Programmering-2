@@ -44,10 +44,9 @@ public class LibrarySystem {
      * ================ E-nivå ================
      ***************************************/
 
-    // TODO städa och kommentera
-
     // Metod för att skapa ny bok och lägg till i listan
     public void addBook() {
+        IO.println("=== SKAPA NY BOK ===");
         // Be användaren mata in information om boken
         String title = checkEmpty("Ange titel: ");
         String author = checkEmpty("Ange författare: ");
@@ -91,12 +90,13 @@ public class LibrarySystem {
         try {
             body = response.getBody();
             Book responseBook = gson.fromJson(body, Book.class);
-            IO.println("\nBoken sparades till servern: " + responseBook.getInfo());
+            books.add(responseBook);
+            IO.println("\nBoken sparades till servern och lokalt i listan: " + responseBook.getInfo());
         } catch (Exception e) {
             IO.println("Fel: " + e.getLocalizedMessage());
         }
 
-        //Fråga om användaren vill synkronisera informationen på server till listan lokalt i programmet, då de inte gör det automatiskt
+        //Fråga om användaren vill synka users från servern (eller låta den lokala listan vara som den är)
         boolean val = askYesNo("\nSynka böcker från server? (j/n): ");
         if (val) {
             IO.println("Hämtar böcker från server...");
@@ -109,6 +109,7 @@ public class LibrarySystem {
 
     // Metod för att skapa en ny tidning och ladda upp på servern
     public void addMagazine() {
+        IO.println("=== SKAPA NY TIDNING ===");
         // Be användaren mata in info om tidningen
         String title = checkEmpty("Ange titel: ");
         int issueNumber = checkEmptyInt("Ange utgåvonummer: "); 
@@ -151,12 +152,13 @@ public class LibrarySystem {
         try {
             body = response.getBody();
             Magazine responseMagazine = gson.fromJson(body, Magazine.class);
-            IO.println("Tidningen sparades till servern: " + responseMagazine.getInfo());
+            magazines.add(responseMagazine);
+            IO.println("Tidningen sparades till servern och lokalt i listan: " + responseMagazine.getInfo());
         } catch (Exception e) {
             IO.println("Fel: " + e.getLocalizedMessage());
         }
 
-        //Fråga om användaren vill synkronisera informationen på server till listan lokalt i programmet, då de inte gör det automatiskt
+        //Fråga om användaren vill synka users från servern (eller låta den lokala listan vara som den är)
         boolean val = askYesNo("\nSynka tidningar från server? (j/n): ");
         if (val) {
             IO.println("Hämtar tidningar från server...");
@@ -267,7 +269,7 @@ public class LibrarySystem {
      * ================ C-nivå ================
      ****************************************/
 
-    // Hämta alla användare från servern
+    //Metod för att hämta alla användare från servern
     public boolean getUsersFromServer() {
         // Försök hämta användre
         try {
@@ -277,7 +279,7 @@ public class LibrarySystem {
             return false;
         }
 
-        // Kolla status
+        // Kolla status om den är OK, annars felmeddelande och avbryt
         status = response.getStatus();
         if (status != 200) {
             IO.println("Fel från server! Statuskod: " + status);
@@ -288,12 +290,10 @@ public class LibrarySystem {
         body = response.getBody();
 
         // Översätt JSON-texten till en ArrayList av Användar-objektet
-        Type userType = new TypeToken<ArrayList<User>>() {
-        }.getType();
-        // Lägg till i lista, sedan loopa igenom listan för att lägga till i samlingen
-        // av användare
+        Type userType = new TypeToken<ArrayList<User>>() {}.getType();
         ArrayList<User> jsonUsers = gson.fromJson(body, userType);
 
+        //Ta bort nuvarande användare i lokala listan och synka istället till hämtade användarna från servern
         users.clear();
         users.addAll(jsonUsers);
 
@@ -307,7 +307,7 @@ public class LibrarySystem {
         return true;
     }
 
-    // Hämta alla avstängda användare från servern
+    //Metod för att hämta alla avstängda användare från servern
     public boolean getSuspendedUsersFromServer() {
         // Försök hämta avstängda användare
         try {
@@ -317,7 +317,7 @@ public class LibrarySystem {
             return false;
         }
 
-        // Kolla status
+        // Kolla status om den är OK, annars felmeddelande och avbryt 
         status = response.getStatus();
         if (status != 200) {
             IO.println("Fel från server! Statuskod: " + status);
@@ -328,12 +328,10 @@ public class LibrarySystem {
         body = response.getBody();
 
         // Översätt JSON-texten till en ArrayList av Användar-objektet
-        Type suspendedUserType = new TypeToken<ArrayList<SuspendedUser>>() {
-        }.getType();
-        // Lägg till i lista, sedan loopa igenom listan för att lägga till i samlingen
-        // av användare
+        Type suspendedUserType = new TypeToken<ArrayList<SuspendedUser>>() {}.getType();
         ArrayList<SuspendedUser> jsonSuspendedUsers = gson.fromJson(body, suspendedUserType);
 
+        //Ta bort nuvarande objekt och lägg till hämtade serverobjekt
         suspendedUsers.clear();
         suspendedUsers.addAll(jsonSuspendedUsers);
 
@@ -343,13 +341,13 @@ public class LibrarySystem {
          * }
          */
 
-        IO.println("Hämtning av avstängda användare lyckad! Antal avstängda användare hämtade: "
-                + jsonSuspendedUsers.size());
+        IO.println("Hämtning av avstängda användare lyckad! Antal avstängda användare hämtade: " + jsonSuspendedUsers.size());
         return true;
     }
 
     // Hämta en bok från servern
     public boolean getOneBookFromServer() {
+        //Be användaren ange ID på boken som ska hämtas
         String id = checkEmpty("Ange ID på boken: ");
 
         // Försök hämta boken
@@ -372,14 +370,24 @@ public class LibrarySystem {
 
         // Översätt JSON-texten till ett Book-objekt av boken och lägg till i samlingen
         Book jsonBook = gson.fromJson(body, Book.class);
-        books.add(jsonBook); // TODO ????
+
+        //Om boken redan finns lagrad lokalt, ta bort innan den hämtade läggs till
+        for (Book b : books) {
+            if (b.getId().equals(jsonBook.getId())) {
+                books.remove(b);
+                break;
+            }
+        }
+        //Lägg till hämtade boken i lokala listan
+        books.add(jsonBook);
 
         IO.println("Hämtning av bok (ID: " + id + ") lyckad!");
         return true;
     }
 
-    // Hämta en tidning från Servern
+    //Metod för att hämta en tidning från Servern
     public boolean getOneMagazineFromServer() {
+        //Be användaren ange ID på det som ska hämtas
         String id = checkEmpty("Ange ID på tidningen: ");
 
         // Försök hämta tidningen
@@ -400,17 +408,25 @@ public class LibrarySystem {
         // Hämta själva informationen för tidningen
         body = response.getBody();
 
-        // Översätt JSON-texten till ett Magazine-objekt av tidningen och lägg till i
-        // samlingen
+        // Översätt JSON-texten till ett Magazine-objekt av tidningen
         Magazine jsonMagazine = gson.fromJson(body, Magazine.class);
-        magazines.add(jsonMagazine); // TODO ????
+        //Om tidningen redan finns lagrad lokalt, ta bort innan den hämtade läggs till
+        for (Magazine m : magazines) {
+            if (m.getId().equals(jsonMagazine.getId())) {
+                magazines.remove(m);
+                break;
+            }
+        }
+        //Lägg till hämtade tidningen i lokala samlingen
+        magazines.add(jsonMagazine); 
 
         IO.println("Hämtning av tidning (ID: " + id + ") lyckad!");
         return true;
     }
 
-    // Hämta en användare från servern
+    //Metod för att hämta en användare från servern
     public boolean getOneUserFromServer() {
+        //Be användaren ange ID på det som ska hämtas
         String id = checkEmpty("Ange ID på användaren: ");
 
         // Försök hämta användare
@@ -431,17 +447,25 @@ public class LibrarySystem {
         // Hämta själva informationen för användare
         body = response.getBody();
 
-        // Översätt JSON-texten till ett user-objekt av användaren och lägg till i
-        // samlingen
+        // Översätt JSON-texten till ett user-objekt av användaren
         User jsonUser = gson.fromJson(body, User.class);
-        users.add(jsonUser); // TODO ????
+        //Om användaren redan finns lagrad lokalt, ta bort innan den hämtade läggs till
+        for (User u : users) {
+            if (u.getId().equals(jsonUser.getId())) {
+                users.remove(u);
+                break;
+            }
+        }
+        //Lägg till i den lokala listan
+        users.add(jsonUser);
 
         IO.println("Hämtning av användare (ID: " + id + ") lyckad!");
         return true;
     }
 
-    // Hämta en avstängd användare från servern
+    //Metod för att hämta en avstängd användare från servern
     public boolean getOneSuspendedUserFromServer() {
+        //Be användaren ange ID på det som ska hämtas
         String id = checkEmpty("Ange ID på avstängd användare: ");
 
         // Försök hämta avstängda
@@ -462,30 +486,35 @@ public class LibrarySystem {
         // Hämta själva informationen för avstängda
         body = response.getBody();
 
-        // Översätt JSON-texten till ett SuspendedUser-objekt av den avstängda och lägg
-        // till i samlingen
+        // Översätt JSON-texten till ett SuspendedUser-objekt av den avstängda
         SuspendedUser jsonSuspendedUser = gson.fromJson(body, SuspendedUser.class);
-        suspendedUsers.add(jsonSuspendedUser); // TODO ????
+        //Om avstängda redan finns lagrad lokalt, ta bort innan den hämtade läggs till
+        for (SuspendedUser s : suspendedUsers) {
+            if (s.getId().equals(jsonSuspendedUser.getId())) {
+                suspendedUsers.remove(s);
+                break;
+            }
+        }
+        //Lägg till i lokala listan
+        suspendedUsers.add(jsonSuspendedUser);
 
         IO.println("Hämtning av avständ användare (ID: " + id + ") lyckad!");
         return true;
     }
 
-    // TODO
-    // Skapa ny bok/tidning/användare/avstängd och lägga upp på server
-
-    // Skapa ny användare och lägg till i listan och på server
+    //Metod för att skapa ny användare och lägg till i listan och på server
     public void addUser() {
-        // Be användaren mata in info om user
+        IO.println("=== SKAPA NY ANVÄNDARE ===");
+        // Be användaren mata in info om ny user
         String name = checkEmpty("Ange namn: ");
         String email = checkEmpty("Ange email: ");
 
         // Skapa ny användare med informationen och lägg till i listan
         User newUser = new User(null, name, email);
 
-        // TODO Ladda upp på server
-
+        //Översätt informationen till JSON-format
         jsonBody = gson.toJson(newUser);
+        //Försök ladda upp nya usern på servern
         try {
             response = Unirest.post(baseURL + "users")
                     .header("Content-Type", "application/json")
@@ -497,24 +526,29 @@ public class LibrarySystem {
             return;
         }
 
+        //Kolla status om det är OK
         status = response.getStatus();
         if (status != 200 && status != 201 && status != 500) {
             IO.println("Fel från server: " + status);
             return;
         }
+        //I vissa fall laddas objektet upp men status 500 skickas //TODO Ta bort denna och alla andra????
         if (status == 500) {
             IO.println("Status: 500");
             IO.println(response.getBody());
         }
 
+        //Försök hämta svaret från servern och skapa ett nytt objekt med IDt som servern gav det, lägg till i lista
         try {
             body = response.getBody();
             User responseUser = gson.fromJson(body, User.class);
-            IO.println("Användaren sparades till servern: " + responseUser);
+            users.add(responseUser);
+            IO.println("Användaren sparades till servern och lokalt i listan: " + responseUser);
         } catch (Exception e) {
             IO.println("Fel: " + e.getLocalizedMessage());
         }
 
+        //Fråga om användaren vill synka users från servern (eller låta den lokala listan vara som den är)
         boolean val = askYesNo("\nSynka användare från server? (j/n): ");
         if (val) {
             IO.println("Hämtar användare från server...");
@@ -522,48 +556,53 @@ public class LibrarySystem {
         } else {
             IO.println("Hämtar inte användare från server.");
         }
-
     }
 
-    // Skapa ny avstängd använadre och lägg till i listan och på server
+    //Metod för att skapa ny avstängd använadre och lägg till i listan och på server
     public void addSuspendedUser() {
-        String userId = checkEmpty("Ange användar-ID: ");
+        IO.println("=== SKAPA NY AVSTÄNGA ANVÄNDARE ===");
+        //Fråga om info
+        String userId = checkEmpty("Ange användar-ID: "); //TODO Ska man kolla så att det finns en user att para ihop till denna???
 
         // Skapa ny användare med informationen och lägg till i listan
         SuspendedUser newSuspendedUser = new SuspendedUser(null, userId);
 
-        // TODO Ladda upp på server
-
+        //Översätt till JSON-format
         jsonBody = gson.toJson(newSuspendedUser);
+        //Försök ladda upp på servern
         try {
             response = Unirest.post(baseURL + "suspended")
                     .header("Content-Type", "application/json")
                     .body(jsonBody)
                     .asString(); // Returnerar ett HTTPResponse<String>
-
         } catch (UnirestException e) {
             IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
             return;
         }
 
+        //Kolla status
         status = response.getStatus();
         if (status != 200 && status != 201 && status != 500) {
             IO.println("Fel från server: " + status);
             return;
         }
+        //Utifall objektet laddas upp, men servern skickar status 500
         if (status == 500) {
             IO.println("Status: 500");
             IO.println(response.getBody());
         }
 
+        //Försök hämta svaret från servern för att få IDt på nya objektet
         try {
             body = response.getBody();
             SuspendedUser responseSuspendedUser = gson.fromJson(body, SuspendedUser.class);
-            IO.println("Avstängd användare sparades till servern: " + responseSuspendedUser);
+            suspendedUsers.add(responseSuspendedUser);
+            IO.println("Avstängd användare sparades till servern och lokalt i listan: " + responseSuspendedUser);
         } catch (Exception e) {
             IO.println("Fel: " + e.getLocalizedMessage());
         }
 
+        //Fråga om användaren vill synka users från servern (eller låta den lokala listan vara som den är)
         boolean val = askYesNo("\nSynka avstängda användare från server? (j/n): ");
         if (val) {
             IO.println("Hämtar avstängda användare från server...");
@@ -574,10 +613,12 @@ public class LibrarySystem {
 
     }
 
-    // Hitta en kund med hjälp av email-adress
+    //Metod för att hitta en kund med hjälp av email-adress
     public User findUser() {
+        //Fråga om email
         String email = checkEmpty("Ange användarens email: ");
 
+        //Sök igenom lokala listan med users och leta efter matchande email
         for (User u : users) {
             if (u.getEmail().equalsIgnoreCase(email)) {
                 IO.println("Kund hittad!");
@@ -590,10 +631,12 @@ public class LibrarySystem {
         return null;
     }
 
-    // Hitta en bok med hjälp av titel
+    //Metod för att hitta en bok med hjälp av titel
     public Book findBook() {
+        //Fråga om titel
         String title = checkEmpty("Ange bokens titel: ");
 
+        //Loopa igenom listan med böcker och leta efter matchande titel
         for (Book b : books) {
             if (b.getTitle().equalsIgnoreCase(title)) {
                 IO.println("Bok hittad!");
@@ -606,10 +649,12 @@ public class LibrarySystem {
         return null;
     }
 
-    // Hitta en tidning med hjälp av titel
+    //Metod för att hitta en tidning med hjälp av titel
     public Magazine findMagazine() {
+        //fråga om titel
         String title = checkEmpty("Ange tidningens titel: ");
 
+        //Loopa igenom listan med tidningar och leta efter matchande titel
         for (Magazine m : magazines) {
             if (m.getTitle().equalsIgnoreCase(title)) {
                 IO.println("Tidning hittad!");
@@ -622,15 +667,18 @@ public class LibrarySystem {
         return null;
     }
 
-    // Ta bort bok från server
+    //Metod för att ta bort bok från server
     public void removeBook() {
+        IO.println("=== TA BORT BOK ===");        //Kolla om boken finns, avbryt om den inte finns
         Book foundBook = findBook();
         if (foundBook == null) {
             return;
         }
-          
+        
+        //Om den finns, hämta dess ID
         String id = foundBook.getId();
 
+        //Försök ta bort boken
         try {
             status = Unirest.delete(baseURL + "books/" + id)
                     .asEmpty() // Skickar ingen body
@@ -640,6 +688,7 @@ public class LibrarySystem {
             return;
         }
 
+        //Kolla status och meddela om borttagning lyckades eller inte
         if (status == 200) {
             IO.println("Boken med titeln: " + foundBook.getTitle() + " togs bort!\n");
         } else if (status == 204) {
@@ -649,15 +698,19 @@ public class LibrarySystem {
         }
     }
 
-    // Ta bort tidning från server
+    //Metod för att ta bort tidning från server
     public void removeMagazine() {
+        IO.println("=== TA BORT TIDNING ===;");
+        //Kolla om tidningen finns
         Magazine foundMagazine = findMagazine();
         if (foundMagazine == null) {
             return;
         }
           
+        //Hämta dess ID
         String id = foundMagazine.getId();
 
+        //Försök ta bort
         try {
             status = Unirest.delete(baseURL + "magazines/" + id)
                     .asEmpty() // Skickar ingen body
@@ -667,6 +720,7 @@ public class LibrarySystem {
             return;
         }
 
+        //Kolla status för att se om borttagning lyckades
         if (status == 200) {
             IO.println("Tidningen med titeln: " + foundMagazine.getTitle() + " togs bort!\n");
         } else if (status == 204) {
@@ -676,15 +730,19 @@ public class LibrarySystem {
         }
     }
 
-    // TA bort användare från server
+    //Metod för att ta bort användare från server
     public void removeUser() {
+        IO.println("=== TA BORT ANVÄNDARE ===");
+        //Kolla om den finns
         User foundUser = findUser();
         if (foundUser == null) {
             return;
         }
           
+        //Hämta dess ID
         String id = foundUser.getId();
 
+        //Försök ta bort
         try {
             status = Unirest.delete(baseURL + "users/" + id)
                     .asEmpty() // Skickar ingen body
@@ -694,6 +752,7 @@ public class LibrarySystem {
             return;
         }
 
+        //Kolla status om borttagning lycakdes
         if (status == 200) {
             IO.println("Användaren med emailen: " + foundUser.getEmail() + " togs bort!\n");
         } else if (status == 204) {
@@ -703,10 +762,13 @@ public class LibrarySystem {
         }
     }
 
-    // Ta bort användare från server
+    //Metod för att ta bort användare från server
     public void removeSuspendedUser() {
+        IO.println("=== TA BORT AVSTÄNGD ANVÄNDARE ===");
+        //Fråga om ID
         String id = checkEmpty("Ange ID på avstängda användaren som ska tas bort: ");
 
+        //Försök ta bort
         try {
             status = Unirest.delete(baseURL + "suspended/" + id)
                     .asEmpty() // Skickar ingen body
@@ -716,63 +778,70 @@ public class LibrarySystem {
             return;
         }
 
+        //Kolla status och ge feedback
         if (status == 200) {
             IO.println("Avstängda användaren med ID: " + id + " togs bort!\n");
         } else if (status == 204) {
-            IO.println("Avstängda användaren finns inte kvar / inget innehåll med ID: " + id + "\n");
+            IO.println("Avstängda användaren finns inte kvar: " + id + "\n");
+        } else if (status == 404){
+            IO.println("Inget avstängd användare med ID: " + id + " finns...\n");
         } else {
             IO.println("Något gick snett. Status: " + status + "\n");
         }
     }
 
-    // Skriv ut böcker sorterat
+    //Metod för att skriva ut böcker sorterat efter titel
     public void printBooksSorted() {
-        books.sort(null);
         IO.println("***** Sorterade böcker *****");
-        for (Book b : books) {
-            IO.println(b.getInfo());
-        }
+        //Strömma igenom listan, sortera efter titel och skriv ut varje element
+        books.stream()
+            .sorted()
+            .forEach(b -> IO.println(b.getInfo()));
     }
 
-    // Skriv ut tidningar sorterat
+    //Metod för att skriva ut tidningar sorterat efter titel
     public void printMagazinesSorted() {
-        magazines.sort(null);
         IO.println("***** Sorterade tidningar *****");
-        for (Magazine m : magazines) {
-            IO.println(m.getInfo());
-        }
+        //Strömma igenom listan, sortera efter titel och skriv ut varje element
+        magazines.stream()
+            .sorted()
+            .forEach(m -> IO.println(m.getInfo()));
     }
 
-    // Skriv ut användare sorterat
+    //Metod för att skriva ut användare sorterat efter namn
     public void printUsersSorted() {
-        users.sort(null);
         IO.println("***** Sorterade användare *****");
-        for (User u : users) {
-            IO.println(u.toString());
-        }
+        //Strömma igenom listan, sortera och skriv ut
+        users.stream()
+            .sorted()
+            .forEach(u -> IO.println(u.toString()));
     }
 
-    // Skriv ut användare
+    //Metod för att skriva ut användare
     public void printUsers() {
         IO.println("***** Alla användare *****");
+        //Loopa igenom listan och skriv ut varje element
         for (User user : users) {
             IO.println(user.toString());
         }
     }
 
-    // Skriv ut avstängda
+    //Metod för att skriva ut avstängda
     public void printSuspendedUser() {
         IO.println("***** Alla avstängda användare *****");
+        //Loopa igenom listan och skriv ut varje element
         for (SuspendedUser s : suspendedUsers) {
             IO.println(s.toString());
         }
     }
 
-    // Kolla om användaren får låna
+    //Metod för att kolla om användaren får låna
     public boolean canUserBorrow() {
+        IO.println("=== KAN ANVÄNDAREN LÅNA? ===\n");
+        //Fråga om ID
         String id = checkEmpty("Ange ID:t på användaren: ");
         User foundUser = null;
-        // Loopa igenom alla användare
+        // Loopa igenom alla användare, kolla om någon med IDt finns (spara i foundUser om hen finns)
         for (User u : users) {
             if (u.getId().equals(id)) {
                 foundUser = u;
@@ -780,13 +849,13 @@ public class LibrarySystem {
             }
         }
 
-        // Om användaren inte finns
+        // Om användaren inte finns, ge felmeddelande och avbryt
         if (foundUser == null) {
             IO.println("Ingen användare med ID:t finns...");
             return false;
         }
 
-        // Kolla om det finns en suspended user med userId = id
+        // Kolla om det finns en suspended user med userId = id genom att loopa igenom listan
         for (SuspendedUser s : suspendedUsers) {
             if (s.getCustomerId().equals(id)) {
                 IO.println("Användaren är avstängd och får inte låna!");
@@ -844,6 +913,7 @@ public class LibrarySystem {
 
     //Metod för att kolla att int-inputs inte är tomma, och så att de är siffror 
     public int checkEmptyInt(String prompt){
+        //Läs in inmatning
         String input =  IO.readln(prompt).trim();
         
         //Loopa tills ett giltigt värde anges
@@ -863,8 +933,10 @@ public class LibrarySystem {
 
     // Metod för att kolla svar på ja/nej frågor
     public boolean askYesNo(String prompt) {
+        //Läs in inmatning
         String val = IO.readln(prompt).trim().toLowerCase();
 
+        //Loopa tills användaren anger antingen j eller n
         while (!val.equals("j") && !val.equals("n")) {
             IO.println("Ogiltigt val. Skriv j eller n");
             val = IO.readln(prompt).trim().toLowerCase();
