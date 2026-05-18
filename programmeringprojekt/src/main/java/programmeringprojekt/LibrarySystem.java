@@ -8,7 +8,7 @@ package programmeringprojekt;
  * LibrarySystem använder sig av övriga klasser (Book, Magazine, User, SuspendedUser)
  * och innehåller funktioner för att skapa, hämta, söka, sortera och ta bort objekt, 
  * samt avgöra om användare får låna eller ej
- * Klassen används av Main för att utföra alla menyval 
+ * Klassen används av Main för att utföra alla meny val 
  * och i grund och botten det som håller ihop hela applikationens funktionalitet  
  */
 
@@ -31,7 +31,7 @@ public class LibrarySystem {
     private List<SuspendedUser> suspendedUsers = new ArrayList<>();
 
     Gson gson = new Gson(); // Gson för att översätta data
-    // String baseURL = "http://10.151.168.5:3140/"; // URL till server
+    //String baseURL = "http://10.151.168.5:3140/"; // URL till server
     String baseURL = "http://localhost:3000/"; // URL för server lokalt
 
     // Tomma variabler för hämtning av data från servern
@@ -97,8 +97,8 @@ public class LibrarySystem {
         }
 
         //Fråga om användaren vill synka users från servern (eller låta den lokala listan vara som den är)
-        boolean val = askYesNo("\nSynka böcker från server? (j/n): ");
-        if (val) {
+        boolean choice = askYesNo("\nSynka böcker från server? (j/n): ");
+        if (choice) {
             IO.println("Hämtar böcker från server...");
             getBooksFromServer();
         } else {
@@ -159,8 +159,8 @@ public class LibrarySystem {
         }
 
         //Fråga om användaren vill synka users från servern (eller låta den lokala listan vara som den är)
-        boolean val = askYesNo("\nSynka tidningar från server? (j/n): ");
-        if (val) {
+        boolean choice = askYesNo("\nSynka tidningar från server? (j/n): ");
+        if (choice) {
             IO.println("Hämtar tidningar från server...");
             getMagazinesFromServer();
         } else {
@@ -549,8 +549,8 @@ public class LibrarySystem {
         }
 
         //Fråga om användaren vill synka users från servern (eller låta den lokala listan vara som den är)
-        boolean val = askYesNo("\nSynka användare från server? (j/n): ");
-        if (val) {
+        boolean choice = askYesNo("\nSynka användare från server? (j/n): ");
+        if (choice) {
             IO.println("Hämtar användare från server...");
             getUsersFromServer();
         } else {
@@ -603,8 +603,8 @@ public class LibrarySystem {
         }
 
         //Fråga om användaren vill synka users från servern (eller låta den lokala listan vara som den är)
-        boolean val = askYesNo("\nSynka avstängda användare från server? (j/n): ");
-        if (val) {
+        boolean choice = askYesNo("\nSynka avstängda användare från server? (j/n): ");
+        if (choice) {
             IO.println("Hämtar avstängda användare från server...");
             getSuspendedUsersFromServer();
         } else {
@@ -851,19 +851,19 @@ public class LibrarySystem {
 
         // Om användaren inte finns, ge felmeddelande och avbryt
         if (foundUser == null) {
-            IO.println("Ingen användare med ID:t finns...");
+            IO.println("Ingen användare med ID:t finns...\n");
             return false;
         }
 
         // Kolla om det finns en suspended user med userId = id genom att loopa igenom listan
         for (SuspendedUser s : suspendedUsers) {
             if (s.getCustomerId().equals(id)) {
-                IO.println("Användaren är avstängd och får inte låna!");
+                IO.println("Användaren är avstängd och får inte låna!\n");
                 return false;
             }
         }
 
-        IO.print("Användaren får låna!");
+        IO.print("Användaren får låna!\n");
         return true;
     }
 
@@ -887,13 +887,13 @@ public class LibrarySystem {
 
     // Metod för att kolla val i meny
     public int checkChoice() {
-        int val = 0;
+        int choice = 0;
         try {
-            val = Integer.parseInt(IO.readln("Ange alternativ: "));
+            choice = Integer.parseInt(IO.readln("Ange alternativ: "));
         } catch (Exception e) {
-            return val;
+            return choice;
         }
-        return val;
+        return choice;
     }
 
     // Metod för att kolla om inmatningsfält är tomma
@@ -934,15 +934,15 @@ public class LibrarySystem {
     // Metod för att kolla svar på ja/nej frågor
     public boolean askYesNo(String prompt) {
         //Läs in inmatning
-        String val = IO.readln(prompt).trim().toLowerCase();
+        String choice = IO.readln(prompt).trim().toLowerCase();
 
         //Loopa tills användaren anger antingen j eller n
-        while (!val.equals("j") && !val.equals("n")) {
-            IO.println("Ogiltigt val. Skriv j eller n");
-            val = IO.readln(prompt).trim().toLowerCase();
+        while (!choice.equals("j") && !choice.equals("n")) {
+            IO.println("Ogiltigt choice. Skriv j eller n");
+            choice = IO.readln(prompt).trim().toLowerCase();
         }
 
-        if (val.equals("j")) {
+        if (choice.equals("j")) {
             return true;
         } else {
             return false;
