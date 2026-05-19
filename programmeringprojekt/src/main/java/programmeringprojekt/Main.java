@@ -24,164 +24,192 @@ public class Main {
             val = 0;
             IO.println("""
                     \n==== BIBLIOTEK ====
-                    1. Hämta böcker
-                    2. Hämta tidningar
-                    3. Hämta användare
-                    4. Skriv ut böcker
-                    5. Skriv ut tidningar
-                    6. Skriv ut användare
-                    7. Skapa nytt
-                    8. Kan användaren låna?
-                    9. Hitta
-                    10. Ta bort
-                    11. Avsluta
+                    1. Hämta
+                    2. Skriv ut
+                    3. Skapa nytt
+                    4. Kan användaren låna?
+                    5. Hitta
+                    6. Ta bort
+                    7. Avsluta
                     """);
             val = bibliotek.checkChoice();
-
             IO.println("\n-------------------------------------------------");
-
             switch (val) {
                 case 1:
                     IO.println("""
-                            === HÄMTA BÖCKER ===
-                            1. Hämta alla böcker
-                            2. Hämta en bok
-                            3. Gå tillbaka
-                            """);
-                    val = bibliotek.checkChoice();
-                    IO.println("\n-------------------------------------------------");
-                    switch (val) {
-                        case 1 -> bibliotek.getBooksFromServer();
-                        case 2 -> bibliotek.getOneBookFromServer();
-                        case 3 -> {
-                            break;
-                        }
-                        default -> {
-                            IO.println("\nOgiltigt val! Försök igen...");
-                            break;
-                        }
-                    }
-                    break;
-                // Undermeny för att hämta tidningar
-                case 2:
-                    IO.println("""
-                            === HÄMTA TIDNINGAR ===
-                            1. Hämta alla tidningar
-                            2. Hämta en tidning
-                            3. Gå tillbaka
-                            """);
-                    val = bibliotek.checkChoice();
-                    IO.println("\n-------------------------------------------------");
-                    switch (val) {
-                        case 1 -> bibliotek.getMagazinesFromServer();
-                        case 2 -> bibliotek.getOneMagazineFromServer();
-                        case 3 -> {
-                            break;
-                        }
-                        default -> {
-                            IO.println("\nOgiltigt val! Försök igen...");
-                            break;
-                        }
-                    }
-                    break;
-                // Undermeny för att hämta användare
-                case 3:
-                    IO.println("""
-                            === HÄMTA ANVÄNDARE ===
-                            1. Hämta alla användare
-                            2. Hämta en användare
-                            3. Hämta alla avstängda användare
-                            4. Hämta en avstängd användare
-                            5. Gå tillbaka
-                            """);
-                    val = bibliotek.checkChoice();
-                    IO.println("\n-------------------------------------------------");
-                    switch (val) {
-                        case 1 -> bibliotek.getUsersFromServer();
-                        case 2 -> bibliotek.getOneUserFromServer();
-                        case 3 -> bibliotek.getSuspendedUsersFromServer();
-                        case 4 -> bibliotek.getOneSuspendedUserFromServer();
-                        case 5 -> {
-                            break;
-                        }
-                        default -> {
-                            IO.println("\nOgiltigt val! Försök igen...");
-                            break;
-                        }
-                    }
-                    break;
-                case 4:
-                    IO.println("""
-                            === SKRIV UT BÖCKER ===
-                            1. Skriv ut böcker
-                            2. Skriv ut böcker sorterat (efter title)
-                            3. Gå tillbaka
-                            """);
-                    val = bibliotek.checkChoice();
-                    IO.println("\n-------------------------------------------------");
-                    switch (val) {
-                        case 1 -> bibliotek.printBooks();
-                        case 2 -> bibliotek.printBooksSorted();
-                        case 3 -> {
-                            break;
-                        }
-                        default -> {
-                            IO.println("\nOgiltigt val! Försök igen...");
-                            break;
-                        }
-                    }
-                    break;
-                case 5:
-                    IO.println("""
-                            === SKRIV UT TIDNINGAR ===
-                            1. Skriv ut tidningar
-                            2. Skriv ut tidningar sorterat (efter title)
-                            3. Gå tillbaka
-                            """);
-                    val = bibliotek.checkChoice();
-                    IO.println("\n-------------------------------------------------");
-                    switch (val) {
-                        case 1 -> bibliotek.printMagazines();
-                        case 2 -> bibliotek.printMagazinesSorted();
-                        case 3 -> {
-                            break;
-                        }
-                        default -> {
-                            IO.println("\nOgiltigt val! Försök igen...");
-                            break;
-                        }
-                    }
-                    break;
-                case 6:
-                    IO.println("""
-                            === SKRIV UT ANVÄNDARE ===
-                            1. Skriv ut användare
-                            2. Skriv ut användare sorterat (efter namn)
-                            3. Skriv ut avstängda användare
+                            === HÄMTA ===
+                            1. Hämta böcker
+                            2. Hämta tidningar
+                            3. Hämta användare
                             4. Gå tillbaka
                             """);
                     val = bibliotek.checkChoice();
                     IO.println("\n-------------------------------------------------");
                     switch (val) {
-                        case 1 -> bibliotek.printUsers();
-                        case 2 -> bibliotek.printUsersSorted();
-                        case 3 -> bibliotek.printSuspendedUser();
-                        case 4 -> {
+                        case 1:
+                            IO.println("""
+                                    === HÄMTA BÖCKER ===
+                                    1. Hämta alla böcker
+                                    2. Hämta en bok
+                                    3. Gå tillbaka
+                                    """);
+                            val = bibliotek.checkChoice();
+                            IO.println("\n-------------------------------------------------");
+                            switch (val) {
+                                case 1 -> bibliotek.getBooksFromServer();
+                                case 2 -> bibliotek.getOneBookFromServer();
+                                case 3 -> {
+                                    break;
+                                }
+                                default -> {
+                                    IO.println("\nOgiltigt val! Försök igen...");
+                                    break;
+                                }
+                            }
                             break;
-                        }
-                        default -> {
+                        case 2:
+                            IO.println("""
+                                    === HÄMTA TIDNINGAR ===
+                                    1. Hämta alla tidningar
+                                    2. Hämta en tidning
+                                    3. Gå tillbaka
+                                    """);
+                            val = bibliotek.checkChoice();
+                            IO.println("\n-------------------------------------------------");
+                            switch (val) {
+                                case 1 -> bibliotek.getMagazinesFromServer();
+                                case 2 -> bibliotek.getOneMagazineFromServer();
+                                case 3 -> {
+                                    break;
+                                }
+                                default -> {
+                                    IO.println("\nOgiltigt val! Försök igen...");
+                                    break;
+                                }
+                            }
+                            break;
+                        case 3:
+                            IO.println("""
+                                    === HÄMTA ANVÄNDARE ===
+                                    1. Hämta alla användare
+                                    2. Hämta en användare
+                                    3. Hämta alla avstängda användare
+                                    4. Hämta en avstängd användare
+                                    5. Gå tillbaka
+                                    """);
+                            val = bibliotek.checkChoice();
+                            IO.println("\n-------------------------------------------------");
+                            switch (val) {
+                                case 1 -> bibliotek.getUsersFromServer();
+                                case 2 -> bibliotek.getOneUserFromServer();
+                                case 3 -> bibliotek.getSuspendedUsersFromServer();
+                                case 4 -> bibliotek.getOneSuspendedUserFromServer();
+                                case 5 -> {
+                                    break;
+                                }
+                                default -> {
+                                    IO.println("\nOgiltigt val! Försök igen...");
+                                    break;
+                                }
+                            }
+                            break;
+                        case 4:
+                            break;
+                        default:
                             IO.println("\nOgiltigt val! Försök igen...");
                             break;
-                        }
                     }
                     break;
-                case 7:
+                case 2:
                     IO.println("""
-                            === SKAPA NYTT OCH LÄGG TILL===
-                            1. Skapa och lägg till bok
-                            2. Skapa och lägg till tidning
-                            3. Skapa och lägg till användare
-                            4. Skapa och lägg till avständ användare
+                            === SKRIV UT ===
+                            1. Skriv ut böcker
+                            2. Skriv ut tidningar
+                            3. Skriv ut användare
+                            4. Gå tillbaka
+                            """);
+                    val = bibliotek.checkChoice();
+                    IO.println("\n-------------------------------------------------");
+                    switch (val) {
+                        case 1:
+                            IO.println("""
+                                    === SKRIV UT BÖCKER ===
+                                    1. Skriv ut böcker
+                                    2. Skriv ut böcker sorterat (efter title)
+                                    3. Gå tillbaka
+                                    """);
+                            val = bibliotek.checkChoice();
+                            IO.println("\n-------------------------------------------------");
+                            switch (val) {
+                                case 1 -> bibliotek.printBooks();
+                                case 2 -> bibliotek.printBooksSorted();
+                                case 3 -> {
+                                    break;
+                                }
+                                default -> {
+                                    IO.println("\nOgiltigt val! Försök igen...");
+                                    break;
+                                }
+                            }
+                            break;
+                        case 2:
+                            IO.println("""
+                                    === SKRIV UT TIDNINGAR ===
+                                    1. Skriv ut tidningar
+                                    2. Skriv ut tidningar sorterat (efter title)
+                                    3. Gå tillbaka
+                                    """);
+                            val = bibliotek.checkChoice();
+                            IO.println("\n-------------------------------------------------");
+                            switch (val) {
+                                case 1 -> bibliotek.printMagazines();
+                                case 2 -> bibliotek.printMagazinesSorted();
+                                case 3 -> {
+                                    break;
+                                }
+                                default -> {
+                                    IO.println("\nOgiltigt val! Försök igen...");
+                                    break;
+                                }
+                            }
+                            break;
+                        case 3:
+                            IO.println("""
+                                    === SKRIV UT ANVÄNDARE ===
+                                    1. Skriv ut användare
+                                    2. Skriv ut användare sorterat (efter namn)
+                                    3. Skriv ut avstängda användare
+                                    4. Gå tillbaka
+                                    """);
+                            val = bibliotek.checkChoice();
+                            IO.println("\n-------------------------------------------------");
+                            switch (val) {
+                                case 1 -> bibliotek.printUsers();
+                                case 2 -> bibliotek.printUsersSorted();
+                                case 3 -> bibliotek.printSuspendedUser();
+                                case 4 -> {
+                                    break;
+                                }
+                                default -> {
+                                    IO.println("\nOgiltigt val! Försök igen...");
+                                    break;
+                                }
+                            }
+                            break;
+                        case 4:
+                            break;
+                        default:
+                            IO.println("\nOgiltigt val! Försök igen...");
+                            break;
+                    }
+                    break;
+                case 3:
+                    IO.println("""
+                            === SKAPA NYTT ===
+                            1. Skapa ny bok
+                            2. Skapa ny tidning
+                            3. Skapa ny användare
+                            4. Skapa ny avständ användare
                             5. Gå tillbaka
                             """);
                     val = bibliotek.checkChoice();
@@ -200,10 +228,10 @@ public class Main {
                         }
                     }
                     break;
-                case 8:
+                case 4:
                     bibliotek.canUserBorrow();
                     break;
-                case 9:
+                case 5:
                     IO.println("""
                             === HITTA ===
                             1. Hitta bok
@@ -226,7 +254,7 @@ public class Main {
                         }
                     }
                     break;
-                case 10:
+                case 6:
                     IO.println("""
                             === TA BORT ===
                             1. Ta bort bok
@@ -251,7 +279,7 @@ public class Main {
                         }
                     }
                     break;
-                case 11:
+                case 7:
                     IO.println("Avslutar...\n");
                     loop = false;
                     Unirest.shutDown();
