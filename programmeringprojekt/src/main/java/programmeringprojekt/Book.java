@@ -18,8 +18,17 @@ public class Book extends LibraryItem implements Borrowable{
     /***KONSTRUKTOR***/
     public Book(String id, String title, boolean isAvailable, String author, String genre, int pages){
         super(id, title, isAvailable);
+        if (author == null || author.isBlank()) {
+            throw new IllegalArgumentException("Författare får inte vara tomt");
+        }
         this.author = author;
+        if (genre == null || genre.isBlank()) {
+            throw new IllegalArgumentException("Genre får inte vara tomt");
+        }
         this.genre = genre;
+        if (pages <= 0) {
+            throw new IllegalArgumentException("Antal sidor måste vara ett positivt tal");
+        }
         this.pages = pages;
     }
 

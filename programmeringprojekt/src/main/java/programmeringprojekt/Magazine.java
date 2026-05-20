@@ -18,8 +18,17 @@ public class Magazine extends LibraryItem implements Borrowable{
     /***KONSTRUKTOR***/
     public Magazine(String id, String title, boolean isAvailable, int issueNumber, String category, int publishedYear){
         super(id, title, isAvailable);
+        if (issueNumber <= 0) {
+            throw new IllegalArgumentException("Utgåvonummer måste vara ett positivt tal");
+        }
         this.issueNumber = issueNumber;
+        if (category == null || category.isBlank()) {
+            throw new IllegalArgumentException("Kategori får inte vara tomt");
+        }
         this.category = category;
+        if (publishedYear <= 0) {
+            throw new IllegalArgumentException("Publiceringsår får inte vara tomt");
+        }
         this.publishedYear = publishedYear;
     }
 

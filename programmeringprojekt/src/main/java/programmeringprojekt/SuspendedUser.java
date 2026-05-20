@@ -14,6 +14,9 @@ public class SuspendedUser {
 
     public SuspendedUser(String id, String customer_id){
         this.id = id;
+        if (customer_id == null || customer_id.isBlank()) {
+            throw new IllegalArgumentException("AnvändarID får inte vara tomt");
+        }
         this.customer_id = customer_id;
     }
 

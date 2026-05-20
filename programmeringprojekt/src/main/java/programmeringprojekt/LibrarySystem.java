@@ -56,6 +56,8 @@ public class LibrarySystem {
      * ================ E-nivå ================
      ***************************************/
 
+    // TODO generella metoder?
+
     // Metod för att skapa ny bok och lägg till i listan
     public void addBook() {
         IO.println("=== SKAPA NY BOK ===");
@@ -68,43 +70,17 @@ public class LibrarySystem {
         // Skapa ny bok med informationen
         Book newBook = new Book(null, title, true, author, genre, pages);
 
-        /***********
-         ** C-NIVÅ **
-         ***********/
-
-        // Översätt informationen till JSON-format
-        jsonBody = gson.toJson(newBook);
-        // Försök lägga till boken på servern, annars skicka undantag
-        try {
-            response = Unirest.post(baseURL + "books")
-                    .header("Content-Type", "application/json")
-                    .body(jsonBody)
-                    .asString(); // Returnerar ett HTTPResponse<String>
-
-        } catch (UnirestException e) {
-            IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
+        //Kalla på metoden som laddar upp objekt på servern (med inparametrar för vilket objekt, vilken del av servern den ska ligga på och vilken typ av objekt)
+        Book responseBook = postToServer(newBook, "books", Book.class);
+        //Om metoden returnerar null har något gått snett, avbryt skapandet av boken
+        if (responseBook == null) {
             return;
         }
-
-        // Hämta statuskod och kolla om den är OK, annars ge felmeddelande och avbryt
-        status = response.getStatus();
-        if (status != 200 && status != 201) {
-            IO.println("Fel från server: " + status);
-            IO.println(response.getBody());
-            return;
-        }
-
-        // Försök läsa svaret från servern och skapa ett nytt objekt av boken för att se
-        // vilket ID den fick
-        try {
-            body = response.getBody();
-            Book responseBook = gson.fromJson(body, Book.class);
-            books.add(responseBook);
-            IO.println("\nBoken sparades till servern och lokalt i listan: " + responseBook.getInfo());
-        } catch (Exception e) {
-            IO.println("Fel: " + e.getLocalizedMessage());
-        }
-
+        
+        //Lägg till boken i listan
+        books.add(responseBook);
+        IO.println("\nBoken sparades till servern och lokalt i listan: " + responseBook.getInfo());
+        
         // Fråga om användaren vill synka users från servern (eller låta den lokala
         // listan vara som den är)
         boolean choice = askYesNo("\nSynka böcker från server? (j/n): ");
@@ -128,42 +104,16 @@ public class LibrarySystem {
         // Skapa en ny tidning
         Magazine newMagazine = new Magazine(null, title, true, issueNumber, category, publishedYear);
 
-        /***********
-         ** C-NIVÅ **
-         ***********/
-
-        // Omvandla tidningen till JSON-format
-        jsonBody = gson.toJson(newMagazine);
-        // Försök lägg till tidningen på servern, annars skicka undantag
-        try {
-            response = Unirest.post(baseURL + "magazines")
-                    .header("Content-Type", "application/json")
-                    .body(jsonBody)
-                    .asString(); // Returnerar ett HTTPResponse<String>
-        } catch (UnirestException e) {
-            IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
+        //Kalla på metoden som laddar upp objekt på servern (med inparametrar för vilket objekt, vilken del av servern den ska ligga på och vilken typ av objekt)
+        Magazine responseMagazine = postToServer(newMagazine, "magazines", Magazine.class);
+        //Om metoden returnerar null har något gått snett, avbryt skapandet av tidningen
+        if (responseMagazine == null) {
             return;
         }
-
-        // Hämta statuskod och kolla så att den är OK, annars skicka felmeddelande och
-        // avbryt
-        status = response.getStatus();
-        if (status != 200 && status != 201) {
-            IO.println("Fel från server: " + status);
-            IO.println(response.getBody());
-            return;
-        }
-
-        // Försök läsa svaret från servern och skriv ut tidningen (med ID som servern
-        // skapade), skicka felmeddelande om det misslyckas
-        try {
-            body = response.getBody();
-            Magazine responseMagazine = gson.fromJson(body, Magazine.class);
-            magazines.add(responseMagazine);
-            IO.println("Tidningen sparades till servern och lokalt i listan: " + responseMagazine.getInfo());
-        } catch (Exception e) {
-            IO.println("Fel: " + e.getLocalizedMessage());
-        }
+        
+        //Lägg till tidningen i listan
+        magazines.add(responseMagazine);
+        IO.println("\nTidningen sparades till servern och lokalt i listan: " + responseMagazine.getInfo());
 
         // Fråga om användaren vill synka users från servern (eller låta den lokala
         // listan vara som den är)
@@ -541,38 +491,16 @@ public class LibrarySystem {
         // Skapa ny användare med informationen och lägg till i listan
         User newUser = new User(null, name, email.toLowerCase());
 
-        // Översätt informationen till JSON-format
-        jsonBody = gson.toJson(newUser);
-        // Försök ladda upp nya usern på servern
-        try {
-            response = Unirest.post(baseURL + "users")
-                    .header("Content-Type", "application/json")
-                    .body(jsonBody)
-                    .asString(); // Returnerar ett HTTPResponse<String>
-
-        } catch (UnirestException e) {
-            IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
+        //Kalla på metoden som laddar upp objekt på servern (med inparametrar för vilket objekt, vilken del av servern den ska ligga på och vilken typ av objekt)
+        User responseUser = postToServer(newUser, "users", User.class);
+        //Om metoden returnerar null har något gått snett, avbryt skapandet av objektet
+        if (responseUser == null) {
             return;
         }
-
-        // Kolla status om det är OK
-        status = response.getStatus();
-        if (status != 200 && status != 201) {
-            IO.println("Fel från server: " + status);
-            IO.println(response.getBody());
-            return;
-        }
-
-        // Försök hämta svaret från servern och skapa ett nytt objekt med IDt som
-        // servern gav det, lägg till i lista
-        try {
-            body = response.getBody();
-            User responseUser = gson.fromJson(body, User.class);
-            users.add(responseUser);
-            IO.println("Användaren sparades till servern och lokalt i listan: " + responseUser);
-        } catch (Exception e) {
-            IO.println("Fel: " + e.getLocalizedMessage());
-        }
+        
+        //Lägg till användaren i listan
+        users.add(responseUser);
+        IO.println("\nAnvändaren sparades till servern och lokalt i listan: " + responseUser.toString());
 
         // Fråga om användaren vill synka users från servern (eller låta den lokala
         // listan vara som den är)
@@ -596,36 +524,16 @@ public class LibrarySystem {
         // Skapa ny användare med informationen och lägg till i listan
         SuspendedUser newSuspendedUser = new SuspendedUser(null, userId);
 
-        // Översätt till JSON-format
-        jsonBody = gson.toJson(newSuspendedUser);
-        // Försök ladda upp på servern
-        try {
-            response = Unirest.post(baseURL + "suspended")
-                    .header("Content-Type", "application/json")
-                    .body(jsonBody)
-                    .asString(); // Returnerar ett HTTPResponse<String>
-        } catch (UnirestException e) {
-            IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
+        //Kalla på metoden som laddar upp objekt på servern (med inparametrar för vilket objekt, vilken del av servern den ska ligga på och vilken typ av objekt)
+        SuspendedUser responseSuspendedUser = postToServer(newSuspendedUser, "suspended", SuspendedUser.class);
+        //Om metoden returnerar null har något gått snett, avbryt skapandet av avstängd
+        if (responseSuspendedUser == null) {
             return;
         }
-
-        // Kolla status
-        status = response.getStatus();
-        if (status != 200 && status != 201) {
-            IO.println("Fel från server: " + status);
-            IO.println(response.getBody());
-            return;
-        }
-
-        // Försök hämta svaret från servern för att få IDt på nya objektet
-        try {
-            body = response.getBody();
-            SuspendedUser responseSuspendedUser = gson.fromJson(body, SuspendedUser.class);
-            suspendedUsers.add(responseSuspendedUser);
-            IO.println("Avstängd användare sparades till servern och lokalt i listan: " + responseSuspendedUser);
-        } catch (Exception e) {
-            IO.println("Fel: " + e.getLocalizedMessage());
-        }
+        
+        //Lägg till boken i listan
+        suspendedUsers.add(responseSuspendedUser);
+        IO.println("\nAvstängda användaren sparades till servern och lokalt i listan: " + responseSuspendedUser.toString());
 
         // Fråga om användaren vill synka users från servern (eller låta den lokala
         // listan vara som den är)
@@ -636,7 +544,6 @@ public class LibrarySystem {
         } else {
             IO.println("Hämtar inte avstängda användare från server.");
         }
-
     }
 
     // Metod för att hitta en kund med hjälp av email-adress
@@ -922,7 +829,12 @@ public class LibrarySystem {
                 IO.println("Fältet får inte vara tomt!");
             } else {
                 try {
-                    return Integer.parseInt(input);
+                    int val = Integer.parseInt(input);
+                    if (val <= 0) {
+                        IO.println("Du måste ange ett positivt tal!");
+                    } else {
+                        return val;
+                    }
                 } catch (Exception e) {
                     IO.println("Du måste ange en siffra!");
                 }
@@ -948,5 +860,30 @@ public class LibrarySystem {
             return false;
         }
     }
+
+    // Generell metod för att ladda upp ett objekt på servern
+    public <Type> Type postToServer(Object newObject, String endpoint, Class<Type> responseType){
+        //Översätt objektet till JSON-format
+        jsonBody = gson.toJson(newObject);
+        // Försök lägga till objektet på servern, annars skicka undantag
+        try {
+            response = Unirest.post(baseURL + endpoint)
+                .header("Content-Type", "application/json")
+                .body(jsonBody)
+                .asString(); // Returnerar ett HTTPResponse<String>
+        } catch (UnirestException e) {
+            IO.println("Undantag uppkoppling: " + e.getLocalizedMessage());
+            return null;
+        }
+
+        // Hämta statuskod och kolla om den är OK, annars ge felmeddelande
+        status = response.getStatus();
+        if (status != 200 && status != 201) {
+            IO.println("\nFel från server: " + status);
+            return null;
+        }
+            //Skicka tillbaka ett objektet som laddas upp på sidan
+            return gson.fromJson(response.getBody(), responseType);
+        }
 
 }

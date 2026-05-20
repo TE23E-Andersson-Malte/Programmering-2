@@ -19,7 +19,13 @@ public class User implements Comparable<User>{
     /***KONSTRUKTOR***/
     public User(String id, String name, String email){
         this.id = id;
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Namn får inte vara tomt");
+        }
         this.name = name;
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Email får inte vara tomt");
+        }
         this.email = email;
     }
 
