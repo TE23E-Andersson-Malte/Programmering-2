@@ -1,13 +1,13 @@
 package programmeringprojekt;
 
-public abstract class Media implements Comparable{
+public abstract class Media implements Comparable<Media>{
     protected String id;
     protected String title;
     protected boolean isAvailable;
 
     /***KONSTRUKTOR***/
     public Media(String id, String title, boolean isAvailable){
-        this.id = id;
+        this.id = id.trim();
         if (title == null || title.isEmpty()) {
             throw new IllegalArgumentException("Titel får inte vara tomt");
         }

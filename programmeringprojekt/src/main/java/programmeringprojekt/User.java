@@ -10,28 +10,29 @@ User-objekt används av LibrarySystem för att hantera registrering, sökning, b
 Klassen implementerar gränssnittet comparable vilket gör det möjligt att sortera användare efter namn
 */
 
-public class User implements Comparable<User>{
+public class User implements Comparable<User> {
     private String id;
     private String name;
     private String email;
     private transient ArrayList<Borrowable> borrowedItems = new ArrayList<>();
 
-    /***KONSTRUKTOR***/
-    public User(String id, String name, String email){
+    /*** KONSTRUKTOR ***/
+    public User(String id, String name, String email) {
         this.id = id;
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Namn får inte vara tomt");
         }
         this.name = name;
-        if (name == null || name.isBlank()) {
+        if (email == null || email.isBlank()) {
             throw new IllegalArgumentException("Email får inte vara tomt");
         }
         this.email = email;
     }
 
-    public User(){};
+    public User() {
+    };
 
-    /***GETTERS***/
+    /*** GETTERS ***/
     public String getId() {
         return id;
     }
@@ -48,31 +49,37 @@ public class User implements Comparable<User>{
         return borrowedItems;
     }
 
-    /***SETTERS***/
+    /*** SETTERS ***/
     public void setName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Namn får inte vara tomt");
+        }
         this.name = name;
     }
 
     public void setEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException("Email får inte vara tomt");
+        }
         this.email = email;
     }
 
-    /***LÄGG TILL OCH TA BORT LÅNADE FÖREMÅL***/
-    public void addBorrowedItem(Borrowable item){
+    /*** LÄGG TILL OCH TA BORT LÅNADE FÖREMÅL ***/
+    public void addBorrowedItem(Borrowable item) {
         borrowedItems.add(item);
     }
 
-    public void returnBorrowedItem(Borrowable item){
+    public void returnBorrowedItem(Borrowable item) {
         borrowedItems.remove(item);
     }
-    
-    /***toString***/
-    public String toString(){
+
+    /*** toString ***/
+    public String toString() {
         return "USER | ID: " + id + " | Name: " + name +
-         " | Email: " + email + " | Borrowed items: " + borrowedItems;
+                " | Email: " + email + " | Borrowed items: " + borrowedItems;
     }
 
-    /***Compare to***/
+    /*** Compare to ***/
     @Override
     public int compareTo(User other) {
         return this.name.compareToIgnoreCase(other.name);
