@@ -1,15 +1,23 @@
 package programmeringprojekt.system;
 
-/*
+/**
  * Malte Andersson
  * LibrarySystem är kärnan i bibliotekssystemet och ansvarar för all logik som rör hantering av böcker, tidningar, användare och avstängda
  * Klassen kommunicerar med servern via HTTP-anrop (GET, POST, DELETE)
- * och använder Gson för att översätta JSON-data till Java-objekt och tvärtom
+ * och använder Gson för att översätta JSON-data till Java-objekt och tvärtom.
+ * 
+ * Huvudansvar:
  * LibrarySystem använder sig av övriga klasser (Book, Magazine, User, SuspendedUser)
  * och innehåller funktioner för att skapa, hämta, söka, sortera och ta bort objekt, 
  * samt avgöra om användare får låna eller ej
+ * 
+ * Användning:
  * Klassen används av Main för att utföra alla meny val 
  * och i grund och botten det som håller ihop hela applikationens funktionalitet  
+ * 
+ * @author Malte Andersson
+ * @version 1.0
+ * @since 2026 
  */
 
 import java.lang.reflect.Type;
@@ -43,14 +51,14 @@ import programmeringprojekt.users.SuspendedUser;
 import programmeringprojekt.users.User;
 
 public class LibrarySystem {
-    // Listor för att lagra böcker, tidningar, användare, avstängda för sig
+    // Lokala listor för att lagra böcker, tidningar, användare, avstängda och media
     private List<Book> books = new ArrayList<>();
     private List<Magazine> magazines = new ArrayList<>();
     private List<User> users = new ArrayList<>();
     private List<SuspendedUser> suspendedUsers = new ArrayList<>();
     private List<Media> media = new ArrayList<>();
 
-    // Mappar för att snabbt hitta hitta objekt
+    // Mapar för att snabbt hitta hitta objekt
     private Map<String, Book> bookMap = new HashMap<>();
     private Map<String, Magazine> magazineMap = new HashMap<>();
     private Map<String, User> userMap = new HashMap<>();
@@ -59,7 +67,7 @@ public class LibrarySystem {
     // Set för att snabbt kontrollera om en användare är avstängd
     private Set<String> suspendedIdSet = new HashSet<>();
 
-    LoanManager loanManager = new LoanManager(); // för att kunna låna
+    LoanManager loanManager = new LoanManager(); // hanterar lån och retur av objekt
     Gson gson = new Gson(); // Gson för att översätta data
     // String baseURL = "http://10.151.168.5:3140/"; // URL till server
     String baseURL = "http://localhost:3000/"; // URL för server lokalt
@@ -69,11 +77,19 @@ public class LibrarySystem {
     int status;
     String body;
 
-    /***************************************
-     * ================ E-nivå ================
-     ***************************************/
-
-    // Metod för att skapa ny bok och lägg till i listan
+    /**
+     * Skapar ett nytt bok-objekt baserat på användarens inmatning och laddar upp det
+     * till servern via ett HTTP POST-anrop. Om servern returnerar ett giltigt
+     * bok-objekt läggs det även till i den lokala listan.
+     *
+     * Funktion:
+     * - Läser in nödvändig information från användaren
+     * - Skapar ett nytt bok-objekt
+     * - Skickar POST-anrop till servern
+     * - Lägger till bok-objektet lokalt om servern accepterar det
+     * - Frågar om användaren vill synkronisera hela listan med böcker
+     *
+     */
     public void addBook() {
         IO.println("=== SKAPA NY BOK ===");
         // Be användaren mata in information om boken
@@ -109,7 +125,19 @@ public class LibrarySystem {
         }
     }
 
-    // Metod för att skapa en ny tidning och ladda upp på servern
+    /**
+     * Skapar ett nytt tidnings-objekt baserat på användarens inmatning och laddar upp det
+     * till servern via ett HTTP POST-anrop. Om servern returnerar ett giltigt
+     * objekt läggs det även till i den lokala listan.
+     *
+     * Funktion:
+     * - Läser in nödvändig information från användaren
+     * - Skapar ett nytt tidnings-objekt 
+     * - Skickar POST-anrop till servern
+     * - Lägger till tidnings-objektet lokalt om servern accepterar det
+     * - Frågar om användaren vill synkronisera hela listan med tidningar
+     *
+     */
     public void addMagazine() {
         IO.println("=== SKAPA NY TIDNING ===");
         // Be användaren mata in info om tidningen
@@ -146,10 +174,29 @@ public class LibrarySystem {
         }
     }
 
-    // Metod för att hämta alla böcker från servern
-    public boolean getBooksFromServer() { // TODO IF null
+    /**
+     * Hämtar alla bok-objekt från servern via ett HTTP GET-anrop.
+     * Metoden anropar en generell metod, tolkar JSON-svaret med Gson
+     * och uppdaterar den lokala listan och tillhörande map.
+     * 
+     * Funktion:
+     * - Skickar GET-anrop till serverns angivna endpoint
+     * - Konverterar JSON-arrayen till en lista av objekt
+     * - Rensar och ersätter den lokala listan med serverns data
+     *
+     * Användning:
+     * Används för att synkronisera lokala data med servern.
+     *
+     * @return true om hämtningen lyckades, annars false
+     */
+
+    public boolean getBooksFromServer() {
         // Försök hämta böckerna
         String bookBody = getFromServer("books");
+        if (bookBody == null) {
+            IO.println("Fel vid hämtning...");
+            return false;
+        }
 
         // Översätt JSON-texten till en ArrayList av Book-objektet
         Type bookType = new TypeToken<ArrayList<Book>>() {
@@ -173,10 +220,28 @@ public class LibrarySystem {
         return true;
     }
 
-    // Metod för att hämta alla tidningar från servern
+    /**
+     * Hämtar alla tidnings-objekt från servern via ett HTTP GET-anrop.
+     * Metoden anropar en generell metod, tolkar JSON-svaret med Gson
+     * och uppdaterar den lokala listan och tillhörande map.
+     * 
+     * Funktion:
+     * - Skickar GET-anrop till serverns angivna endpoint
+     * - Konverterar JSON-arrayen till en lista av objekt
+     * - Rensar och ersätter den lokala listan med serverns data
+     *
+     * Användning:
+     * Används för att synkronisera lokala data med servern.
+     *
+     * @return true om hämtningen lyckades, annars false
+     */
     public boolean getMagazinesFromServer() {
         // Försök hämta tidningar
         String magazineBody = getFromServer("magazines");
+        if (magazineBody == null) {
+            IO.println("Fel vid hämtning...");
+            return false;
+        }
 
         // Översätt JSON-texten till en ArrayList av Book-objektet
         Type magazineType = new TypeToken<ArrayList<Magazine>>() {
@@ -200,7 +265,10 @@ public class LibrarySystem {
         return true;
     }
 
-    // Metod för att skriva ut böcker
+    /**
+     * Skriver ut alla objekt av en viss typ som finns i den lokala listan.
+     * Metoden går igenom listan och skriver ut varje objekt.
+     */
     public void printBooks() {
         IO.println("***** Alla böcker *****");
         // Loopa igenom listan med böcker och skriv ut varje bok på en rad
@@ -209,7 +277,10 @@ public class LibrarySystem {
         }
     }
 
-    // Metod för att skriva ut tidningar
+    /**
+     * Skriver ut alla objekt av en viss typ som finns i den lokala listan.
+     * Metoden går igenom listan och skriver ut varje objekt.
+     */
     public void printMagazines() {
         IO.println("***** Alla tidningar *****");
         // Loopa igenom listan med tidningar och skriv ut
@@ -218,14 +289,28 @@ public class LibrarySystem {
         }
     }
 
-    /***************************************
-     * ================ C-nivå ================
-     ****************************************/
-
-    // Metod för att hämta alla användare från servern
+    /**
+     * Hämtar alla användar-objekt  från servern via ett HTTP GET-anrop.
+     * Metoden anropar en generell metod, tolkar JSON-svaret med Gson
+     * och uppdaterar den lokala listan och tillhörande map.
+     * 
+     * Funktion:
+     * - Skickar GET-anrop till serverns angivna endpoint
+     * - Konverterar JSON-arrayen till en lista av objekt
+     * - Rensar och ersätter den lokala listan med serverns data
+     *
+     * Användning:
+     * Används för att synkronisera lokala data med servern.
+     *
+     * @return true om hämtningen lyckades, annars false
+     */
     public boolean getUsersFromServer() {
-        // Försök hämta användre
+        // Försök hämta användare
         String userBody = getFromServer("users");
+        if (userBody == null) {
+            IO.println("Fel vid hämtning...");
+            return false;
+        }
 
         // Översätt JSON-texten till en ArrayList av Användar-objektet
         Type userType = new TypeToken<ArrayList<User>>() {
@@ -248,10 +333,28 @@ public class LibrarySystem {
         return true;
     }
 
-    // Metod för att hämta alla avstängda användare från servern
+    /**
+     * Hämtar alla avstängda-objekt från servern via ett HTTP GET-anrop.
+     * Metoden anropar en generell metod, tolkar JSON-svaret med Gson
+     * och uppdaterar den lokala listan och tillhörande map.
+     * 
+     * Funktion:
+     * - Skickar GET-anrop till serverns angivna endpoint
+     * - Konverterar JSON-arrayen till en lista av objekt
+     * - Rensar och ersätter den lokala listan med serverns data
+     *
+     * Användning:
+     * Används för att synkronisera lokala data med servern.
+     *
+     * @return true om hämtningen lyckades, annars false
+     */
     public boolean getSuspendedUsersFromServer() {
         // Försök hämta avstängda användare
         String suspendedUserBody = getFromServer("suspended");
+        if (suspendedUserBody == null) {
+            IO.println("Fel vid hämtning...");
+            return false;
+        }
 
         // Översätt JSON-texten till en ArrayList av avstägnd Användar-objektet
         Type suspendedUserType = new TypeToken<ArrayList<SuspendedUser>>() {
@@ -272,13 +375,34 @@ public class LibrarySystem {
         return true;
     }
 
-    // Hämta en bok från servern
+    /**
+     * Hämtar ett enskilt bok-objekt från servern baserat på användarens angivna ID.
+     * Metoden skickar ett GET-anrop till servern, tolkar JSON-svaret och
+     * ersätter eventuell tidigare version av objektet i den lokala listan.
+     *
+     * Funktion:
+     * - Läser in ID från användaren
+     * - Skickar GET-anrop till servern för boken
+     * - Konverterar JSON till rätt objekttyp
+     * - Tar bort gammal version av objektet i lokala listan
+     * - Lägger till den uppdaterade versionen
+     *
+     * Användning:
+     * Används när användaren vill hämta ett specifikt bok-objekt och uppdatera
+     * den lokala datan med serverns senaste version.
+     *
+     * @return true om hämtningen lyckades, annars false
+     */
     public boolean getOneBookFromServer() {
         // Be användaren ange ID på boken som ska hämtas
         String id = checkEmpty("Ange ID på boken: ");
 
         // Anropa metod för att hämta en bok med id
         String bookBody = getOneFromServer("books", id);
+        if (bookBody == null) {
+            IO.println("Fel vid hämtning...");
+            return false;
+        }
 
         // Översätt JSON-texten till ett Book-objekt av boken och lägg till i samlingen
         Book jsonBook = gson.fromJson(bookBody, Book.class);
@@ -300,13 +424,34 @@ public class LibrarySystem {
         return true;
     }
 
-    // Metod för att hämta en tidning från Servern
+    /**
+     * Hämtar ett enskilt tidnings-objekt från servern baserat på användarens angivna ID.
+     * Metoden skickar ett GET-anrop till servern, tolkar JSON-svaret och
+     * ersätter eventuell tidigare version av objektet i den lokala listan.
+     *
+     * Funktion:
+     * - Läser in ID från användaren
+     * - Skickar GET-anrop till servern för tidningen
+     * - Konverterar JSON till rätt objekttyp
+     * - Tar bort gammal version av objektet i lokala listan
+     * - Lägger till den uppdaterade versionen
+     *
+     * Användning:
+     * Används när användaren vill hämta ett specifikt objekt och uppdatera
+     * den lokala datan med serverns senaste version.
+     *
+     * @return true om hämtningen lyckades, annars false
+     */
     public boolean getOneMagazineFromServer() {
         // Be användaren ange ID på det som ska hämtas
         String id = checkEmpty("Ange ID på tidningen: ");
 
         // Anropa metod för att hämta en tidning med id
         String magazineBody = getOneFromServer("magazines", id);
+        if (magazineBody == null) {
+            IO.println("Fel vid hämtning...");
+            return false;
+        }
 
         // Översätt JSON-texten till ett Magazine-objekt av tidningen
         Magazine jsonMagazine = gson.fromJson(magazineBody, Magazine.class);
@@ -327,13 +472,34 @@ public class LibrarySystem {
         return true;
     }
 
-    // Metod för att hämta en användare från servern
+    /**
+     * Hämtar ett enskilt användar-objekt från servern baserat på användarens angivna ID.
+     * Metoden skickar ett GET-anrop till servern, tolkar JSON-svaret och
+     * ersätter eventuell tidigare version av objektet i den lokala listan.
+     *
+     * Funktion:
+     * - Läser in ID från användaren
+     * - Skickar GET-anrop till servern för användar-objektet
+     * - Konverterar JSON till rätt objekttyp
+     * - Tar bort gammal version av objektet i lokala listan
+     * - Lägger till den uppdaterade versionen
+     *
+     * Användning:
+     * Används när användaren vill hämta ett specifikt objekt och uppdatera
+     * den lokala datan med serverns senaste version.
+     *
+     * @return true om hämtningen lyckades, annars false
+     */
     public boolean getOneUserFromServer() {
         // Be användaren ange ID på det som ska hämtas
         String id = checkEmpty("Ange ID på användaren: ");
 
         // Anropa metod för att hämta en user med id
         String userBody = getOneFromServer("users", id);
+        if (userBody == null) {
+            IO.println("Fel vid hämtning...");
+            return false;
+        }
 
         // Översätt JSON-texten till ett user-objekt av användaren
         User jsonUser = gson.fromJson(userBody, User.class);
@@ -354,13 +520,34 @@ public class LibrarySystem {
         return true;
     }
 
-    // Metod för att hämta en avstängd användare från servern
+    /**
+     * Hämtar ett enskilt avstängd användare-objekt från servern baserat på användarens angivna ID.
+     * Metoden skickar ett GET-anrop till servern, tolkar JSON-svaret och
+     * ersätter eventuell tidigare version av objektet i den lokala listan.
+     *
+     * Funktion:
+     * - Läser in ID från användaren
+     * - Skickar GET-anrop till servern för det specifika objektet
+     * - Konverterar JSON till rätt objekttyp
+     * - Tar bort gammal version av objektet i lokala listan
+     * - Lägger till den uppdaterade versionen
+     *
+     * Användning:
+     * Används när användaren vill hämta ett specifikt objekt och uppdatera
+     * den lokala datan med serverns senaste version.
+     *
+     * @return true om hämtningen lyckades, annars false
+     */
     public boolean getOneSuspendedUserFromServer() {
         // Be användaren ange ID på det som ska hämtas
         String id = checkEmpty("Ange ID på avstängd användare: ");
 
         // Anropa metod för att hämta en suspended med id
         String suspendedUserBody = getOneFromServer("suspended", id);
+        if (suspendedUserBody == null) {
+            IO.println("Fel vid hämtning...");
+            return false;
+        }
 
         // Översätt JSON-texten till ett SuspendedUser-objekt av den avstängda
         SuspendedUser jsonSuspendedUser = gson.fromJson(suspendedUserBody, SuspendedUser.class);
@@ -377,11 +564,23 @@ public class LibrarySystem {
         suspendedIdSet.remove(jsonSuspendedUser.getCustomerId());
         suspendedIdSet.add(jsonSuspendedUser.getCustomerId());
 
-        IO.println("Hämtning av avständ användare (ID: " + id + ") lyckad!");
+        IO.println("Hämtning av avstängd användare (ID: " + id + ") lyckad!");
         return true;
     }
 
-    // Metod för att skapa ny användare och lägg till i listan och på server
+    /**
+     * Skapar ett nytt användar-objekt baserat på användarens inmatning och laddar upp det
+     * till servern via ett HTTP POST-anrop. Om servern returnerar ett giltigt
+     * användar-objekt läggs det även till i den lokala listan.
+     *
+     * Funktion:
+     * - Läser in nödvändig information från användaren
+     * - Skapar ett nytt användar-objekt
+     * - Skickar POST-anrop till servern
+     * - Lägger till objektet lokalt om servern accepterar det
+     * - Frågar om användaren vill synkronisera hela listan med användare
+     *
+     */
     public void addUser() {
         IO.println("=== SKAPA NY ANVÄNDARE ===");
         // Be användaren mata in info om ny user
@@ -415,8 +614,19 @@ public class LibrarySystem {
         }
     }
 
-    // Metod för att skapa ny avstängd använadre och lägg till i listan och på
-    // server
+    /**
+     * Skapar ett nytt avstängd användare-objekt baserat på användarens inmatning och laddar upp det
+     * till servern via ett HTTP POST-anrop. Om servern returnerar ett giltigt
+     * objekt läggs det även till i den lokala listan.
+     *
+     * Funktion:
+     * - Läser in nödvändig information från användaren
+     * - Skapar ett nytt avstängd användare-objekt
+     * - Skickar POST-anrop till servern
+     * - Lägger till objektet lokalt om servern accepterar det
+     * - Frågar om användaren vill synkronisera hela listan med avstängda användare
+     *
+     */
     public void addSuspendedUser() {
         IO.println("=== SKAPA NY AVSTÄNGA ANVÄNDARE ===");
         // Fråga om info
@@ -450,7 +660,13 @@ public class LibrarySystem {
         }
     }
 
-    // Metod för att hitta en kund med hjälp av email-adress
+    /**
+     * Söker efter ett användar-objekt baserat på en nyckel, i detta fall email.
+     * Metoden använder en Map för att hitta objektet och skriver ut
+     * resultatet om det hittas.
+     *
+     * @return det hittade objektet, eller null om inget matchande objekt finns
+     */
     public User findUser() {
         // Fråga om email
         String email = checkEmpty("Ange användarens email: ");
@@ -466,7 +682,13 @@ public class LibrarySystem {
         }
     }
 
-    // Metod för att hitta en bok med hjälp av titel
+    /**
+     * Söker efter ett bok-objekt baserat på en nyckel, i detta fall titel.
+     * Metoden använder en map för att hitta objektet och skriver ut
+     * resultatet om det hittas.
+     *
+     * @return det hittade objektet, eller null om inget matchande objekt finns
+     */
     public Book findBook() {
         // Fråga om titel
         String title = checkEmpty("Ange bokens titel: ");
@@ -483,7 +705,13 @@ public class LibrarySystem {
         }
     }
 
-    // Metod för att hitta en tidning med hjälp av titel
+    /**
+     * Söker efter ett tidnings-objekt baserat på en nyckel, i detta fall titel.
+     * Metoden använder en Map för att hitta objektet och skriver ut
+     * resultatet om det hittas.
+     *
+     * @return det hittade objektet, eller null om inget matchande objekt finns
+     */
     public Magazine findMagazine() {
         // fråga om titel
         String title = checkEmpty("Ange tidningens titel: ");
@@ -499,7 +727,17 @@ public class LibrarySystem {
         }
     }
 
-    // Metod för att ta bort bok från server
+    /**
+     * Tar bort ett bok-objekt från servern och från den lokala listan.
+     * Metoden söker först upp boken, hämtar dess ID och skickar
+     * ett DELETE-anrop till servern. Om borttagningen lyckas tas
+     * objektet även bort lokalt.
+     *
+     * Funktion:
+     * - Söker upp objektet via titel
+     * - Skickar DELETE-anrop till servern
+     * - Tar bort objektet från lokala listan om servern bekräftar borttagning
+     */
     public void removeBook() {
         IO.println("=== TA BORT BOK ==="); // Kolla om boken finns, avbryt om den inte finns
         Book foundBook = findBook();
@@ -517,9 +755,19 @@ public class LibrarySystem {
         }
     }
 
-    // Metod för att ta bort tidning från server
+    /**
+     * Tar bort ett tidnings-objekt från servern och från den lokala listan.
+     * Metoden söker först upp objektet, hämtar dess ID och skickar
+     * ett DELETE-anrop till servern. Om borttagningen lyckas tas
+     * objektet även bort lokalt.
+     *
+     * Funktion:
+     * - Söker upp objektet via titel
+     * - Skickar DELETE-anrop till servern
+     * - Tar bort objektet från lokala listan om servern bekräftar borttagning
+     */
     public void removeMagazine() {
-        IO.println("=== TA BORT TIDNING ===;");
+        IO.println("=== TA BORT TIDNING ===");
         // Kolla om tidningen finns
         Magazine foundMagazine = findMagazine();
         if (foundMagazine == null) {
@@ -536,7 +784,17 @@ public class LibrarySystem {
         }
     }
 
-    // Metod för att ta bort användare från server
+    /**
+     * Tar bort ett användar-objekt från servern och från den lokala listan.
+     * Metoden söker först upp objektet, hämtar dess ID och skickar
+     * ett DELETE-anrop till servern. Om borttagningen lyckas tas
+     * objektet även bort lokalt.
+     *
+     * Funktion:
+     * - Söker upp objektet via email
+     * - Skickar DELETE-anrop till servern
+     * - Tar bort objektet från lokala listan om servern bekräftar borttagning
+     */
     public void removeUser() {
         IO.println("=== TA BORT ANVÄNDARE ===");
         // Kolla om den finns
@@ -559,7 +817,17 @@ public class LibrarySystem {
         }
     }
 
-    // Metod för att ta bort användare från server
+    /**
+     * Tar bort ett avstängd användare-objekt från servern och från den lokala listan.
+     * Frågar om objektets ID och skickar
+     * ett DELETE-anrop till servern. Om borttagningen lyckas tas
+     * objektet även bort lokalt.
+     *
+     * Funktion:
+     * - Fråga om ID
+     * - Skickar DELETE-anrop till servern
+     * - Tar bort objektet från lokala listan om servern bekräftar borttagning
+     */
     public void removeSuspendedUser() {
         IO.println("=== TA BORT AVSTÄNGD ANVÄNDARE ===");
         // Fråga om ID
@@ -569,7 +837,11 @@ public class LibrarySystem {
         deleteFromServer("suspended", id);
     }
 
-    // Metod för att skriva ut böcker sorterat efter titel
+    /**
+     * Skriver ut en lista av bok-objekt sorterade efter titel.
+     * Sorteringen görs med Java streams och objektets jämförelsemetod, sedan
+     * skrivs resultatet ut
+     */
     public void printBooksSorted() {
         IO.println("***** Sorterade böcker *****");
         // Strömma igenom listan, sortera efter titel och skriv ut varje element
@@ -578,7 +850,11 @@ public class LibrarySystem {
                 .forEach(b -> IO.println(b.getInfo()));
     }
 
-    // Metod för att skriva ut tidningar sorterat efter titel
+   /**
+     * Skriver ut en lista av tidnings-objekt sorterade efter titel.
+     * Sorteringen görs med Java streams och objektets jämförelsemetod, sedan
+     * skrivs resultatet ut
+     */
     public void printMagazinesSorted() {
         IO.println("***** Sorterade tidningar *****");
         // Strömma igenom listan, sortera efter titel och skriv ut varje element
@@ -587,7 +863,11 @@ public class LibrarySystem {
                 .forEach(m -> IO.println(m.getInfo()));
     }
 
-    // Metod för att skriva ut användare sorterat efter namn
+   /**
+     * Skriver ut en lista av användar-objekt sorterade efter namn.
+     * Sorteringen görs med Java streams och objektets jämförelsemetod, sedan
+     * skrivs resultatet ut
+     */
     public void printUsersSorted() {
         IO.println("***** Sorterade användare *****");
         // Strömma igenom listan, sortera och skriv ut
@@ -596,7 +876,10 @@ public class LibrarySystem {
                 .forEach(u -> IO.println(u.toString()));
     }
 
-    // Metod för att skriva ut användare
+    /**
+     * Skriver ut alla användar-objekt av en viss typ som finns i den lokala listan.
+     * Metoden går igenom listan och skriver ut varje objekt.
+     */
     public void printUsers() {
         IO.println("***** Alla användare *****");
         // Loopa igenom listan och skriv ut varje element
@@ -605,7 +888,10 @@ public class LibrarySystem {
         }
     }
 
-    // Metod för att skriva ut avstängda
+    /**
+     * Skriver ut alla avstängd användare-objekt av en viss typ som finns i den lokala listan.
+     * Metoden går igenom listan och skriver ut varje objekt.
+     */
     public void printSuspendedUser() {
         IO.println("***** Alla avstängda användare *****");
         // Loopa igenom listan och skriv ut varje element
@@ -614,7 +900,12 @@ public class LibrarySystem {
         }
     }
 
-    // Metod för att kolla om användaren får låna
+    /**
+     * Kontrollerar om en användare får låna. Metoden söker först upp användaren
+     * och kontrollerar sedan om användarens ID finns i listan över avstängda.
+     *
+     * @return true om användaren får låna, annars false
+     */
     public boolean canUserBorrow() {
         IO.println("=== KAN ANVÄNDAREN LÅNA? ===\n");
 
@@ -633,10 +924,19 @@ public class LibrarySystem {
         return true;
     }
 
-    /***************************************
-     * ================ A-nivå ================
-     ****************************************/
-
+    /**
+     * Skapar ett nytt media- objekt baserat på användarens inmatning och laddar upp det
+     * till servern via ett HTTP POST-anrop. Om servern returnerar ett giltigt
+     * objekt läggs det även till i den lokala listan.
+     *
+     * Funktion:
+     * - Läser in nödvändig information från användaren
+     * - Skapar ett nytt media-objekt av rätt typ
+     * - Skickar POST-anrop till servern
+     * - Lägger till objektet lokalt om servern accepterar det
+     * - Frågar om användaren vill synkronisera hela listan
+     *
+     */
     public void addMedia() {
         IO.println("=== SKAPA NY MEDIA ===");
         String type = checkEmpty("Ange typ av media (game/music_album/movie): ");
@@ -684,6 +984,21 @@ public class LibrarySystem {
         }
     }
 
+    /**
+     * Hämtar alla media-objekt från servern via ett HTTP GET-anrop.
+     * Metoden anropar en generell metod, tolkar JSON-svaret med Gson
+     * och uppdaterar den lokala listan och tillhörande map.
+     * 
+     * Funktion:
+     * - Skickar GET-anrop till serverns angivna endpoint
+     * - Konverterar JSON-arrayen till en lista av objekt
+     * - Rensar och ersätter den lokala listan med serverns data
+     *
+     * Användning:
+     * Används för att synkronisera lokala data med servern.
+     *
+     * @return true om hämtningen lyckades, annars false
+     */
     public boolean getMediaFromServer() {
         // Försök hämta media
         String mediaBody = getFromServer("media");
@@ -703,24 +1018,20 @@ public class LibrarySystem {
             // Hämta själva objektet och läs ut viklen typ av media det är
             JsonObject object = element.getAsJsonObject();
 
-            // Kontrollera att type finns
-            if (!object.has("type")) {
-                IO.println("⚠️  VARNING: Media-objekt saknar 'type'. ID: " + object.get("id"));
-                IO.println("Detta objekt måste tas bort manuellt.");
-                continue; // hoppa över så programmet inte kraschar
-            }
-
             String type = object.get("type").getAsString();
 
             Media mediaObject = null;
 
             // Skapa rätt typ av media beroende på typen i json objektet
-            if (type.equals("game")) {
+            if (type.equalsIgnoreCase("game")) {
                 mediaObject = gson.fromJson(object, Game.class);
-            } else if (type.equals("music_album")) {
+            } else if (type.equalsIgnoreCase("music_album")) {
                 mediaObject = gson.fromJson(object, MusicAlbum.class);
-            } else if (type.equals("movie")) {
+            } else if (type.equalsIgnoreCase("movie")) {
                 mediaObject = gson.fromJson(object, Movie.class);
+            } else {
+                IO.println("Okänd typ, fel i hämtning");
+                return false;
             }
 
             // Lägg till i listor
@@ -734,13 +1045,34 @@ public class LibrarySystem {
         return true;
     }
 
-    // Hämta en media från servern
+    /**
+     * Hämtar ett enskilt media-objekt från servern baserat på användarens angivna ID.
+     * Metoden skickar ett GET-anrop till servern, tolkar JSON-svaret och
+     * ersätter eventuell tidigare version av objektet i den lokala listan.
+     *
+     * Funktion:
+     * - Läser in ID från användaren
+     * - Skickar GET-anrop till servern för det specifika objektet
+     * - Konverterar JSON till rätt objekttyp
+     * - Tar bort gammal version av objektet i lokala listan
+     * - Lägger till den uppdaterade versionen
+     *
+     * Användning:
+     * Används när användaren vill hämta ett specifikt objekt och uppdatera
+     * den lokala datan med serverns senaste version.
+     *
+     * @return true om hämtningen lyckades, annars false
+     */
     public boolean getOneMediaFromServer() {
         // Be användaren ange ID på media som ska hämtas
         String id = checkEmpty("Ange ID på media: ");
 
         // Anropa metod för att hämta en media med id
         String mediaBody = getOneFromServer("media", id);
+        if (mediaBody == null) {
+            IO.println("Fel vid hämtning...");
+            return false;
+        }
 
         // Gör om JSON-texten till ett JsonObject
         JsonObject mediaObject = JsonParser.parseString(mediaBody).getAsJsonObject();
@@ -784,6 +1116,14 @@ public class LibrarySystem {
         return true;
     }
 
+    /**
+     * Söker efter ett media-objekt baserat på en nyckel, i detta fall titel.
+     * Metoden använder en Map för att hitta objektet, kollar vilken typ av objekt
+     * det är och skriver ut
+     * resultatet om det hittas.
+     *
+     * @return det hittade objektet, eller null om inget matchande objekt finns
+     */
     public Media findMedia() {
         String title = checkEmpty("Ange titel: ");
 
@@ -811,6 +1151,10 @@ public class LibrarySystem {
         return foundMedia;
     }
 
+    /**
+     * Skriver ut alla media-objekt av en viss typ som finns i den lokala listan.
+     * Metoden går igenom listan och skriver ut varje objekt.
+     */
     public void printMedia() {
         IO.println("***** Alla media *****");
         for (Media m : media) {
@@ -818,6 +1162,11 @@ public class LibrarySystem {
         }
     }
 
+    /**
+     * Skriver ut en lista av media-objekt sorterade efter titel.
+     * Sorteringen görs med Java streams och objektens jämförelsemetoder, sedan
+     * skrivs resultatet ut
+     */
     public void printMediaSorted() {
         IO.println("***** Sorterad media *****");
         // Strömma igenom listan, sortera efter titel och skriv ut varje element
@@ -826,6 +1175,17 @@ public class LibrarySystem {
                 .forEach(b -> IO.println(b.getInfo()));
     }
 
+    /**
+     * Tar bort ett media-objekt från servern och från den lokala listan.
+     * Metoden söker först upp objektet, hämtar dess ID och skickar
+     * ett DELETE-anrop till servern. Om borttagningen lyckas tas
+     * objektet även bort lokalt.
+     *
+     * Funktion:
+     * - Söker upp objektet via titel
+     * - Skickar DELETE-anrop till servern
+     * - Tar bort objektet från lokala listan om servern bekräftar borttagning
+     */
     public void removeMedia() {
         IO.println("=== TA BORT MEDIA ==="); // Kolla om media finns, avbryt om den inte finns
         Media foundMedia = findMedia();
@@ -835,7 +1195,6 @@ public class LibrarySystem {
 
         // Om den finns, hämta dess ID
         String id = foundMedia.getId();
-        IO.println(id);
 
         // Försök ta bort boken
         boolean ok = deleteFromServer("media", id);
@@ -844,7 +1203,11 @@ public class LibrarySystem {
         }
     }
 
-    // Metod för att skriva ut alla böcker av en författare
+    /**
+     * Skriver ut en lista av bok-objekt filtrerade efter författare av boken.
+     * Filtreringen görs med Java streams, sedan
+     * skrivs resultatet ut
+     */
     public void printBooksFilteredByAuthor() {
         String author = checkEmpty("Ange författare: ");
 
@@ -855,7 +1218,11 @@ public class LibrarySystem {
                 .forEach(b -> IO.println(b.getInfo()));
     }
 
-    // Metod för att skriva ut alla böcker av en genre
+    /**
+     * Skriver ut en lista av bok-objekt filtrerade efter genre hos böcker.
+     * Filtreringen görs med Java streams, sedan
+     * skrivs resultatet ut
+     */
     public void printBooksFilteredByGenre() {
         String genre = checkEmpty("Ange genre: ");
 
@@ -866,7 +1233,11 @@ public class LibrarySystem {
                 .forEach(b -> IO.println(b.getInfo()));
     }
 
-    // Metod för att skriva ut böcker sorterat efter författare
+    /**
+     * Skriver ut en lista av bok-objekt sorterade efter författare av böckerna
+     * Sorteringen görs med Java streams och objektens jämförelsemetoder, sedan
+     * skrivs resultatet ut
+     */
     public void printBooksSortedByAuthor() {
         // Strömma igenom böcker, sortera genom att jämföra en boks författare med en
         // annan boks författare, skriv ut böckerna sorterat efter författarnamn
@@ -875,7 +1246,11 @@ public class LibrarySystem {
                 .forEach(b -> IO.println(b.getInfo()));
     }
 
-    // Metod för att skriva ut böcker sorterat efter genre
+    /**
+     * Skriver ut en lista av bok-objekt sorterade efter genre hos böcker.
+     * Sorteringen görs med Java streams och objektens jämförelsemetoder, sedan
+     * skrivs resultatet ut
+     */
     public void printBooksSortedByGenre() {
         // Strömma igenom böcker, sortera genom att jämföra en boks genre med en annan
         // boks genre, skriv ut böckerna sorterat efter genre
@@ -884,7 +1259,11 @@ public class LibrarySystem {
                 .forEach(b -> IO.println(b.getInfo()));
     }
 
-    // Metod för att räkna antal böcker av en författare
+    /**
+     * Räknar hur många böcker som är skrivna av en viss författare.
+     * Metoden frågar användaren efter ett namn och använder sedan en
+     * stream‑filtrering för att räkna antalet matchande böcker.
+     */
     public void countBooksByAuthor() {
         String auhtor = checkEmpty("Ange författare: ");
 
@@ -897,7 +1276,11 @@ public class LibrarySystem {
         IO.println("Antal böcker av " + auhtor + ": " + count);
     }
 
-    // Metod för att skriva ut alla bokförfattare
+    /**
+     * Skriver ut alla unika författare som finns i boklistan.
+     * Metoden använder en stream för att plocka ut författarnamn
+     * och tar bort dubletter innan utskrift.
+     */
     public void printBookAuthors() {
         // Strömma igenom böckerna, plocka ut varje boks författare, ta bort dubletter,
         // skriv ut varje författare
@@ -907,7 +1290,11 @@ public class LibrarySystem {
                 .forEach(b -> IO.println(b));
     }
 
-    // Metod för att skriva ut alla bokgenrer
+    /**
+     * Skriver ut alla unika genrer som finns i boklistan.
+     * Metoden använder en stream för att plocka ut genrer
+     * och tar bort dubletter innan utskrift.
+     */
     public void printBookGenres() {
         // Strömma igenom böckerna, plocka ut varje boks genre, ta bort dubletter, skriv
         // ut varje genre
@@ -917,7 +1304,13 @@ public class LibrarySystem {
                 .forEach(g -> IO.println(g));
     }
 
-    // Metod för att låna föremål
+    /**
+     * Lånar ett objekt (bok, tidning eller media) till en användare.
+     * Metoden söker först upp användaren, sedan objektet och kontrollerar
+     * om det går att låna och registrerar lånet i LoanManager.
+     * Objektets tillgänglighet uppdateras även på servern.
+     */
+
     public void loanItem() {
         IO.println("=== LÅNA OBJEKT (book) ===");
 
@@ -925,7 +1318,7 @@ public class LibrarySystem {
         User loanUser = findUser();
         if (loanUser == null) {
             return;
-        }
+        } // TODO får han låna
 
         // vad ska lånas
         Borrowable item = findAnyItem();
@@ -951,7 +1344,12 @@ public class LibrarySystem {
         IO.println("Utlåning registrerad");
     }
 
-    // Metod för att returnera föremål
+    /**
+     * Returnerar ett utlånat objekt. Metoden söker upp objektet,
+     * markerar det som tillgängligt igen, tar bort lånet från LoanManager
+     * och uppdaterar objektets status på servern.
+     */
+
     public void returnItem() {
         IO.println("=== LÄMNA TILLBAKA ===");
 
@@ -976,6 +1374,13 @@ public class LibrarySystem {
         IO.println("Objektet är nu återlämnat");
     }
 
+    /**
+     * Söker efter ett objekt baserat på titel. Metoden letar igenom
+     * böcker, tidningar och media och returnerar det första objekt
+     * som matchar titeln.
+     *
+     * @return ett objekt som kan lånas (Borrowable), eller null om inget hittas
+     */
     public Borrowable findAnyItem() {
         IO.println("Sök efter objekt (bok/tidning/media)");
 
@@ -1006,7 +1411,13 @@ public class LibrarySystem {
      * =============== METODER ===============
      ****************************************/
 
-    // Metod för att kolla val i meny
+    /**
+     * Läser in ett menyval från användaren och försöker omvandla det till ett
+     * heltal.
+     * Om användaren skriver något ogiltigt returneras 0.
+     *
+     * @return det valda heltalet, eller 0 om inmatningen inte är giltig
+     */
     public int checkChoice() {
         int choice = 0;
         try {
@@ -1017,7 +1428,13 @@ public class LibrarySystem {
         return choice;
     }
 
-    // Metod för att kolla om inmatningsfält är tomma
+    /**
+     * Läser in en sträng från användaren och säkerställer att den inte är tom.
+     * Användaren får försöka igen tills ett giltigt värde anges.
+     *
+     * @param prompt texten som visas för användaren
+     * @return en icke‑tom sträng
+     */
     public String checkEmpty(String prompt) {
         // Läs in inmatning
         String input = IO.readln(prompt).trim();
@@ -1032,7 +1449,14 @@ public class LibrarySystem {
         return input;
     }
 
-    // Metod för att kolla att int-inputs inte är tomma, och så att de är siffror
+    /**
+     * Läser in ett heltal från användaren och säkerställer att värdet är giltigt.
+     * Metoden kräver att användaren skriver ett positivt heltal och fortsätter
+     * fråga tills ett korrekt värde anges.
+     *
+     * @param prompt texten som visas för användaren
+     * @return ett positivt heltal
+     */
     public int checkEmptyInt(String prompt) {
         // Läs in inmatning
         String input = IO.readln(prompt).trim();
@@ -1057,7 +1481,13 @@ public class LibrarySystem {
         }
     }
 
-    // Metod för att kolla svar på ja/nej frågor
+    /**
+     * Läser in ett ja/nej‑svar från användaren. Endast 'j' eller 'n' accepteras.
+     * Metoden fortsätter fråga tills användaren skriver ett giltigt svar.
+     *
+     * @param prompt texten som visas för användaren
+     * @return true om användaren svarar 'j', annars false
+     */
     public boolean askYesNo(String prompt) {
         // Läs in inmatning
         String choice = IO.readln(prompt).trim().toLowerCase();
@@ -1075,7 +1505,16 @@ public class LibrarySystem {
         }
     }
 
-    // Generell metod för att ladda upp ett objekt på servern
+    /**
+     * En metod som skickar ett objekt till servern med ett HTTP POST‑anrop.
+     * Metoden omvandlar objektet till JSON, skickar det till angiven endpoint
+     * och returnerar det objekt som servern svarar med.
+     *
+     * @param newObject    objektet som ska skickas till servern
+     * @param endpoint     serverns resurs, till exempel "books" eller "users"
+     * @param responseType den typ som svaret ska omvandlas till
+     * @return ett objekt av den angivna typen, eller null om något går fel
+     */
     public <Type> Type postToServer(Object newObject, String endpoint, Class<Type> responseType) {
         // Översätt objektet till JSON-format
         String jsonBody = gson.toJson(newObject);
@@ -1100,8 +1539,14 @@ public class LibrarySystem {
         return gson.fromJson(response.getBody(), responseType);
     }
 
-    // Generell metod som använder sig av olika inparametrar för att hämta olika
-    // saker från server
+    /**
+     * Metod som hämtar alla objekt av en viss typ från servern via ett HTTP
+     * GET‑anrop.
+     * Metoden returnerar JSON‑texten som servern skickar tillbaka.
+     *
+     * @param endpoint serverns resurs, till exempel "books" eller "users"
+     * @return JSON‑sträng med alla objekt, eller null om hämtningen misslyckas
+     */
     private String getFromServer(String endpoint) {
         // Försök hämta alla utav en typ av objekt från servern
         try {
@@ -1123,8 +1568,15 @@ public class LibrarySystem {
         return body;
     }
 
-    // Generell metod för att hämta ett objekt från server, använder imparametrar
-    // för att få rätt slutpunkt på servern, samt id på objektet
+    /**
+     * Hämtar ett enskilt objekt från servern baserat på ID och slutpunkt.
+     * Metoden skickar ett GET‑anrop till servern och returnerar JSON‑texten
+     * för det specifika objektet.
+     *
+     * @param endpoint serverns slutpunkt, till exempel "books" eller "users"
+     * @param id ID för objektet som ska hämtas
+     * @return JSON‑sträng för objektet, eller null om hämtningen misslyckas
+     */
     private String getOneFromServer(String endpoint, String id) {
         // Försök hämta alla utav en typ av objekt från servern
         try {
@@ -1146,8 +1598,15 @@ public class LibrarySystem {
         return body;
     }
 
-    // Generell metod för att ta bort ett objekt från server, använder imparametrar
-    // för att få rätt slutpunkt på servern, samt id på objektet
+    /**
+     * Tar bort ett objekt från servern baserat på slutpunkt och ID.
+     * Metoden skickar ett Delete‑anrop till servern och returnerar
+     * om borttagningen lyckades eller inte beroende på statuskoden.
+     *
+     * @param endpoint serverns slutpunkt, till exempel "books" eller "users"
+     * @param id ID för objektet som ska tas bort
+     * @return true om objektet togs bort, annars false
+     */
     public boolean deleteFromServer(String endpoint, String id) {
         // Försök ta bort
         try {
@@ -1175,7 +1634,13 @@ public class LibrarySystem {
         }
     }
 
-    // Metod för att uppdatera objekt på servern
+    /**
+     * Uppdaterar ett objekts information på servern. Metoden avgör vilken
+     * typ av objekt det är (bok, tidning eller media) och skickar ett PUT‑anrop
+     * med objektets info.
+     *
+     * @param item objektet som ska uppdateras på servern
+     */
     public void updateItemOnServer(Borrowable item) {
         String endpoint = "";
         String id = "";
@@ -1219,9 +1684,17 @@ public class LibrarySystem {
         }
     }
 
+    /**
+     * Returnerar ID för ett objekt som kan lånas. Metoden avgör vilken
+     * typ av objekt det är (Book, Magazine eller Media) och hämtar dess ID.
+     *
+     * @param item objektet som ID ska hämtas från
+     * @return objektets ID, eller null om typen inte känns igen
+     */
+
     public String getIdOfBorrowable(Borrowable item) {
 
-        //kolla vilken typ det är och returnera idt
+        // kolla vilken typ det är och returnera idt
         if (item instanceof Book b) {
             return b.getId();
         } else if (item instanceof Magazine m) {

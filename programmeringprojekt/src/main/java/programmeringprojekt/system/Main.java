@@ -2,24 +2,40 @@ package programmeringprojekt.system;
 
 import kong.unirest.Unirest;
 
-/*
+/**
 * Malte Andersson
-* Klassen main ansvarar för visa huvudmenyn och dess undermenyer 
-samt ansvarar för användarens val.
-Main skapar ett LibrarySystem-objekt och anropar dess metoder beroende på användarens val i menyn
-Klassen hanterar programloopen och ser till att användaren för tydlig feedback vid varje val
-Main innehåller ingen logik utan fungerar endast som vägen mellan användaren och Librarysystem
+* Klassen Main är programmets startpunkt ansvarar för visa huvudmenyn och dess undermenyer 
+* samt ansvarar för användarens val.
+* Main skapar ett LibrarySystem-objekt och anropar dess metoder beroende på användarens val i menyn
+* Klassen hanterar programloopen och ser till att användaren för tydlig feedback vid varje val
+* Main innehåller ingen logik utan fungerar endast som vägen mellan användaren och Librarysystem
+*
+* Användning:
+* Starta programmet genom att köra main-metoden. Användaren navigerar genom menyvalen och 
+* main vidarebefodrar valen till LibrarySystem
+*
+* @author Malte Andersson
+* @version 1.0
+* @since 2026
 */
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main() {
 
-        // Skapa ett nytt bibliotekssystem
+        /*
+        * Startar programmet, visar meny och hanterar valen
+        * Metoden kör en loop tills användaren väljer att avsluta programmet
+        */
+
+        // Skapa ett nytt bibliotekssystem som hanterar all logik
         LibrarySystem bibliotek = new LibrarySystem();
+        
+        //Styr programmets körning
+        boolean loop = true;
+        //lagrar användarens val
+        int val;
 
         // Meny för programmet
-        boolean loop = true;
-        int val;
         while (loop) {
             val = 0;
             IO.println("""

@@ -17,7 +17,7 @@ public abstract class Media implements Comparable<Media>, Borrowable{
         this.title = title.trim();
         if (type == null || type.isBlank()) {
             throw new IllegalArgumentException("Typ får inte vara tomt");
-        } else if (type != "game" && type != "music_album" && type != "movie") {
+        } else if (type.equals("game") && type.equals("music_album") && type.equals("movie")) {
             throw new IllegalArgumentException("Ogiltig typ av media");
         }
         this.type = type;
@@ -47,6 +47,7 @@ public abstract class Media implements Comparable<Media>, Borrowable{
     }
 
     //COMPARE TO metod
+    @Override
     public int compareTo(Media other){
         return this.title.compareToIgnoreCase(other.title);
     };
@@ -58,7 +59,7 @@ public abstract class Media implements Comparable<Media>, Borrowable{
     public boolean borrowItem(){
         if (getIsAvailable()) {
             setIsAvailable(false);
-            IO.println("\nBoken lånades ut");
+            IO.println("\nObjektet lånades ut");
             return true;
         } else {
             return false;
@@ -67,6 +68,6 @@ public abstract class Media implements Comparable<Media>, Borrowable{
 
     public void returnItem(){
         setIsAvailable(true);
-        IO.println("\nBoken lämnades tillbaka.");
+        IO.println("\nObjektet lämnades tillbaka.");
     }
 }
