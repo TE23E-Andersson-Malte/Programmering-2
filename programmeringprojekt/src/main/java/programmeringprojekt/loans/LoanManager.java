@@ -32,6 +32,11 @@ public class LoanManager {
     private Gson gson = new Gson();
     private final String FILE = "loans.json"; // final för att det inte ska kunna ändras senare
 
+    /**
+     * Skapar en ny instans av LoanManager.
+     * Vid start läses alla befintliga lån in från lagringsfilen
+     * för att systemet ska ha tillgång till aktuella låneposter.
+     */
     public LoanManager() {
         // Läs in lån vid start
         loadLoans();

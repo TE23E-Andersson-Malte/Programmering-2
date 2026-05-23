@@ -12,13 +12,26 @@ package programmeringprojekt.items;
  * @since 2026
  */
 
-
-public class Game extends Media{
+public class Game extends Media {
     private String genre;
     private int age;
 
-    /***KONSTRUKTOR***/
-    public Game(String type, String id, String title, boolean isAvailable, String genre, int age){
+    /**
+     * Skapar ett nytt Game‑objekt.
+     * Ärver type, id, title och isAvailable från Media och lägger till
+     * spelets genre och rekommenderad ålder.
+     *
+     * @param type        medietyp (t.ex. "game")
+     * @param id          unikt id för spelet
+     * @param title       spelets titel
+     * @param isAvailable om spelet är tillgängligt för utlåning
+     * @param genre       spelets genre
+     * @param age         rekommenderad ålder för spelet
+     * @throws IllegalArgumentException om genre är null eller tomt,
+     *                                  eller om age är mindre än eller lika med
+     *                                  noll
+     */
+    public Game(String type, String id, String title, boolean isAvailable, String genre, int age) {
         super(type, id, title, isAvailable);
         if (genre == null || genre.isBlank()) {
             throw new IllegalArgumentException("Genre får inte vara tomt");
@@ -30,23 +43,34 @@ public class Game extends Media{
         this.age = age;
     }
 
-    /***GETTERS***/
+    /**
+     * Hämtar spelets genre.
+     *
+     * @return spelets genre
+     */
     public String getGenre() {
         return genre;
     }
 
+    /**
+     * Hämtar spelets rekommenderade ålder.
+     *
+     * @return åldersrekommendationen
+     */
     public int getAge() {
         return age;
     }
 
-    //GET INFO
-    public String getInfo(){
+    /**
+     * Returnerar en textrepresentation av spelet,
+     * inklusive id, titel, tillgänglighet, åldersgräns och genre.
+     *
+     * @return en formaterad sträng med spelets information
+     */
+    public String getInfo() {
         return "GAME | ID: " + id + " | Title: " + title +
-         " | isAvailable: " + isAvailable + " | Age: " + 
-         age + " | Genre: " + genre;
+                " | isAvailable: " + isAvailable + " | Age: " +
+                age + " | Genre: " + genre;
     };
 
-    
-
-    
 }
