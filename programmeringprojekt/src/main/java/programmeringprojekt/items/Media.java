@@ -1,6 +1,8 @@
 package programmeringprojekt.items;
 
-public abstract class Media implements Comparable<Media>{
+import programmeringprojekt.loans.Borrowable;
+
+public abstract class Media implements Comparable<Media>, Borrowable{
     protected String id;
     protected String title;
     protected boolean isAvailable;
@@ -51,4 +53,20 @@ public abstract class Media implements Comparable<Media>{
 
     //GET INFO
     public abstract String getInfo();
+
+    /***LÅN- OCH RETURFUNKTIONER***/
+    public boolean borrowItem(){
+        if (getIsAvailable()) {
+            setIsAvailable(false);
+            IO.println("\nBoken lånades ut");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void returnItem(){
+        setIsAvailable(true);
+        IO.println("\nBoken lämnades tillbaka.");
+    }
 }

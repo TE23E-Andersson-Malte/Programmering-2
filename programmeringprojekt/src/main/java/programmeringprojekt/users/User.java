@@ -1,9 +1,5 @@
 package programmeringprojekt.users;
 
-import java.util.ArrayList;
-
-import programmeringprojekt.interfaces.Borrowable;
-
 /*
 Malte Andersson
 Klassen User representerar en kund/användare i bibliotekssytemet
@@ -16,7 +12,6 @@ public class User implements Comparable<User> {
     private String id;
     private String name;
     private String email;
-    private transient ArrayList<Borrowable> borrowedItems = new ArrayList<>();
 
     /*** KONSTRUKTOR ***/
     public User(String id, String name, String email) {
@@ -47,10 +42,6 @@ public class User implements Comparable<User> {
         return email;
     }
 
-    public ArrayList<Borrowable> getBorrowedItems() {
-        return borrowedItems;
-    }
-
     /*** SETTERS ***/
     public void setName(String name) {
         if (name == null || name.isBlank()) {
@@ -66,19 +57,10 @@ public class User implements Comparable<User> {
         this.email = email;
     }
 
-    /*** LÄGG TILL OCH TA BORT LÅNADE FÖREMÅL ***/
-    public void addBorrowedItem(Borrowable item) {
-        borrowedItems.add(item);
-    }
-
-    public void returnBorrowedItem(Borrowable item) {
-        borrowedItems.remove(item);
-    }
-
     /*** toString ***/
     public String toString() {
         return "USER | ID: " + id + " | Name: " + name +
-                " | Email: " + email + " | Borrowed items: " + borrowedItems;
+                " | Email: " + email;
     }
 
     /*** Compare to ***/

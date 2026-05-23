@@ -1,4 +1,4 @@
-package programmeringprojekt.interfaces;
+package programmeringprojekt.loans;
 
 /*
  * Malte Andersson

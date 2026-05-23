@@ -31,7 +31,8 @@ public class Main {
                     5. Hitta
                     6. Ta bort
                     7. Streams
-                    8. Avsluta
+                    8. Låna
+                    9. Avsluta
                     """);
             val = bibliotek.checkChoice();
             IO.println("\n-------------------------------------------------");
@@ -414,6 +415,26 @@ public class Main {
                     }
                     break;
                 case 8:
+                    IO.println("""
+                            1. Låna
+                            2. Returnera
+                            3. Gå tillbaka
+                            """);
+                            val = bibliotek.checkChoice();
+                            IO.println("\n-------------------------------------------------");
+                            switch (val) {
+                                case 1 -> bibliotek.loanItem();
+                                case 2 -> bibliotek.returnItem();
+                                case 3 -> {
+                                    break;
+                                }
+                                default -> {
+                                    IO.println("\nOgiltigt val! Försök igen...");
+                                    break;
+                                }
+                            }
+                        break;
+                case 9:
                     IO.println("Avslutar...\n");
                     loop = false;
                     Unirest.shutDown();

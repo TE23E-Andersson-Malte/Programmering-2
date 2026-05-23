@@ -1,6 +1,6 @@
 package programmeringprojekt.items;
 
-import programmeringprojekt.interfaces.Borrowable;
+import programmeringprojekt.loans.Borrowable;
 
 /*
  * Malte Andersson
