@@ -1,0 +1,54 @@
+package programmeringprojekt.items;
+
+public abstract class Media implements Comparable<Media>{
+    protected String id;
+    protected String title;
+    protected boolean isAvailable;
+    protected String type;
+
+    /***KONSTRUKTOR***/
+    public Media(String type, String id, String title, boolean isAvailable){
+        this.id = id;
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("Titel får inte vara tomt");
+        }
+        this.title = title.trim();
+        if (type == null || type.isBlank()) {
+            throw new IllegalArgumentException("Typ får inte vara tomt");
+        } else if (type != "game" && type != "music_album" && type != "movie") {
+            throw new IllegalArgumentException("Ogiltig typ av media");
+        }
+        this.type = type;
+        this.isAvailable = isAvailable;
+    }
+
+    /***GETTERS***/
+    public String getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public boolean getIsAvailable(){
+        return isAvailable;
+    }
+
+    public String getType(){
+        return type;
+    }
+
+    /***SETTERS***/
+    public void setIsAvailable(boolean isAvailable){
+        this.isAvailable = isAvailable;
+    }
+
+    //COMPARE TO metod
+    public int compareTo(Media other){
+        return this.title.compareToIgnoreCase(other.title);
+    };
+
+    //GET INFO
+    public abstract String getInfo();
+}

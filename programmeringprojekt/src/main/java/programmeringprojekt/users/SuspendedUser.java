@@ -1,0 +1,35 @@
+package programmeringprojekt.users;
+
+/*
+Malte Andersson
+Klassen SuspendedUser representerar en avstängd kund i bibliotekssystemet
+Den lagrar en koppling till en befintlig användare genom customer_id (tidigare userId)
+vilket gör det möjlit för LibrarySystem att avgöra om en kund är avstängd och därmed inte får långa material
+Klassen används även av LibrarySystem för kontroll av lånerättigheter samt hämtning, skapande och borttagning av avstängda kunder
+*/
+
+public class SuspendedUser {
+    private String customer_id;
+    private String id;
+
+    public SuspendedUser(String id, String customer_id){
+        this.id = id;
+        if (customer_id == null || customer_id.isBlank()) {
+            throw new IllegalArgumentException("AnvändarID får inte vara tomt");
+        }
+        this.customer_id = customer_id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getCustomerId() {
+        return customer_id;
+    }
+
+    public String toString(){
+        return "SUSPENDED USER | ID: " + id +
+         " | Customer ID: " + customer_id;
+    }
+}
