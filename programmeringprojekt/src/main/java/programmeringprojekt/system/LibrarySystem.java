@@ -66,8 +66,14 @@ public class LibrarySystem {
     // Set för att snabbt kontrollera om en användare är avstängd
     private Set<String> suspendedIdSet = new HashSet<>();
 
-    LoanManager loanManager = new LoanManager(); // hanterar lån och retur av objekt
-    Gson gson = new Gson(); // Gson för att översätta data
+    /**
+     * hanterar lån och retur av objekt
+     */
+    LoanManager loanManager = new LoanManager();
+    /**
+     * Gson för att översätta data
+     */
+    Gson gson = new Gson();
     // String baseURL = "http://10.151.168.5:3140/"; // URL till server
     String baseURL = "http://localhost:3000/"; // URL för server lokalt
 
@@ -77,7 +83,8 @@ public class LibrarySystem {
     String body;
 
     /**
-     * Skapar ett nytt bok-objekt baserat på användarens inmatning och laddar upp det
+     * Skapar ett nytt bok-objekt baserat på användarens inmatning och laddar upp
+     * det
      * till servern via ett HTTP POST-anrop. Om servern returnerar ett giltigt
      * bok-objekt läggs det även till i den lokala listan.
      *
@@ -125,13 +132,14 @@ public class LibrarySystem {
     }
 
     /**
-     * Skapar ett nytt tidnings-objekt baserat på användarens inmatning och laddar upp det
+     * Skapar ett nytt tidnings-objekt baserat på användarens inmatning och laddar
+     * upp det
      * till servern via ett HTTP POST-anrop. Om servern returnerar ett giltigt
      * objekt läggs det även till i den lokala listan.
      *
      * Funktion:
      * - Läser in nödvändig information från användaren
-     * - Skapar ett nytt tidnings-objekt 
+     * - Skapar ett nytt tidnings-objekt
      * - Skickar POST-anrop till servern
      * - Lägger till tidnings-objektet lokalt om servern accepterar det
      * - Frågar om användaren vill synkronisera hela listan med tidningar
@@ -289,7 +297,7 @@ public class LibrarySystem {
     }
 
     /**
-     * Hämtar alla användar-objekt  från servern via ett HTTP GET-anrop.
+     * Hämtar alla användar-objekt från servern via ett HTTP GET-anrop.
      * Metoden anropar en generell metod, tolkar JSON-svaret med Gson
      * och uppdaterar den lokala listan och tillhörande map.
      * 
@@ -424,7 +432,8 @@ public class LibrarySystem {
     }
 
     /**
-     * Hämtar ett enskilt tidnings-objekt från servern baserat på användarens angivna ID.
+     * Hämtar ett enskilt tidnings-objekt från servern baserat på användarens
+     * angivna ID.
      * Metoden skickar ett GET-anrop till servern, tolkar JSON-svaret och
      * ersätter eventuell tidigare version av objektet i den lokala listan.
      *
@@ -472,7 +481,8 @@ public class LibrarySystem {
     }
 
     /**
-     * Hämtar ett enskilt användar-objekt från servern baserat på användarens angivna ID.
+     * Hämtar ett enskilt användar-objekt från servern baserat på användarens
+     * angivna ID.
      * Metoden skickar ett GET-anrop till servern, tolkar JSON-svaret och
      * ersätter eventuell tidigare version av objektet i den lokala listan.
      *
@@ -520,7 +530,8 @@ public class LibrarySystem {
     }
 
     /**
-     * Hämtar ett enskilt avstängd användare-objekt från servern baserat på användarens angivna ID.
+     * Hämtar ett enskilt avstängd användare-objekt från servern baserat på
+     * användarens angivna ID.
      * Metoden skickar ett GET-anrop till servern, tolkar JSON-svaret och
      * ersätter eventuell tidigare version av objektet i den lokala listan.
      *
@@ -568,7 +579,8 @@ public class LibrarySystem {
     }
 
     /**
-     * Skapar ett nytt användar-objekt baserat på användarens inmatning och laddar upp det
+     * Skapar ett nytt användar-objekt baserat på användarens inmatning och laddar
+     * upp det
      * till servern via ett HTTP POST-anrop. Om servern returnerar ett giltigt
      * användar-objekt läggs det även till i den lokala listan.
      *
@@ -614,7 +626,8 @@ public class LibrarySystem {
     }
 
     /**
-     * Skapar ett nytt avstängd användare-objekt baserat på användarens inmatning och laddar upp det
+     * Skapar ett nytt avstängd användare-objekt baserat på användarens inmatning
+     * och laddar upp det
      * till servern via ett HTTP POST-anrop. Om servern returnerar ett giltigt
      * objekt läggs det även till i den lokala listan.
      *
@@ -817,7 +830,8 @@ public class LibrarySystem {
     }
 
     /**
-     * Tar bort ett avstängd användare-objekt från servern och från den lokala listan.
+     * Tar bort ett avstängd användare-objekt från servern och från den lokala
+     * listan.
      * Frågar om objektets ID och skickar
      * ett DELETE-anrop till servern. Om borttagningen lyckas tas
      * objektet även bort lokalt.
@@ -849,7 +863,7 @@ public class LibrarySystem {
                 .forEach(b -> IO.println(b.getInfo()));
     }
 
-   /**
+    /**
      * Skriver ut en lista av tidnings-objekt sorterade efter titel.
      * Sorteringen görs med Java streams och objektets jämförelsemetod, sedan
      * skrivs resultatet ut
@@ -862,7 +876,7 @@ public class LibrarySystem {
                 .forEach(m -> IO.println(m.getInfo()));
     }
 
-   /**
+    /**
      * Skriver ut en lista av användar-objekt sorterade efter namn.
      * Sorteringen görs med Java streams och objektets jämförelsemetod, sedan
      * skrivs resultatet ut
@@ -888,7 +902,8 @@ public class LibrarySystem {
     }
 
     /**
-     * Skriver ut alla avstängd användare-objekt av en viss typ som finns i den lokala listan.
+     * Skriver ut alla avstängd användare-objekt av en viss typ som finns i den
+     * lokala listan.
      * Metoden går igenom listan och skriver ut varje objekt.
      */
     public void printSuspendedUser() {
@@ -924,7 +939,8 @@ public class LibrarySystem {
     }
 
     /**
-     * Skapar ett nytt media- objekt baserat på användarens inmatning och laddar upp det
+     * Skapar ett nytt media- objekt baserat på användarens inmatning och laddar upp
+     * det
      * till servern via ett HTTP POST-anrop. Om servern returnerar ett giltigt
      * objekt läggs det även till i den lokala listan.
      *
@@ -1045,7 +1061,8 @@ public class LibrarySystem {
     }
 
     /**
-     * Hämtar ett enskilt media-objekt från servern baserat på användarens angivna ID.
+     * Hämtar ett enskilt media-objekt från servern baserat på användarens angivna
+     * ID.
      * Metoden skickar ett GET-anrop till servern, tolkar JSON-svaret och
      * ersätter eventuell tidigare version av objektet i den lokala listan.
      *
@@ -1573,7 +1590,7 @@ public class LibrarySystem {
      * för det specifika objektet.
      *
      * @param endpoint serverns slutpunkt, till exempel "books" eller "users"
-     * @param id ID för objektet som ska hämtas
+     * @param id       ID för objektet som ska hämtas
      * @return JSON‑sträng för objektet, eller null om hämtningen misslyckas
      */
     private String getOneFromServer(String endpoint, String id) {
@@ -1603,7 +1620,7 @@ public class LibrarySystem {
      * om borttagningen lyckades eller inte beroende på statuskoden.
      *
      * @param endpoint serverns slutpunkt, till exempel "books" eller "users"
-     * @param id ID för objektet som ska tas bort
+     * @param id       ID för objektet som ska tas bort
      * @return true om objektet togs bort, annars false
      */
     public boolean deleteFromServer(String endpoint, String id) {
