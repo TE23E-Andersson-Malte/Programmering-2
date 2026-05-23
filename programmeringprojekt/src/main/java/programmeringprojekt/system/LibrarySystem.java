@@ -840,6 +840,72 @@ public class LibrarySystem {
         }
     }
 
+    //Metod för att skriva ut alla böcker av en författare
+    public void printBooksFilteredByAuthor(){
+        String author = checkEmpty("Ange författare: ");
+
+        //Strömma igenom böcker, filtrera genom att jämföra varje boks författare med den angivna författaren, skriv ut de böcker med den författaren
+        books.stream()
+            .filter(b -> b.getAuthor().equalsIgnoreCase(author))
+            .forEach(b -> IO.println(b.getInfo()));
+    }
+
+    //Metod för att skriva ut alla böcker av en genre
+    public void printBooksFilteredByGenre(){
+        String genre = checkEmpty("Ange genre: ");
+
+        //Strömma igenom böcker, filtrera genom att jämföra varje boks genre med den angivna genre, skriv ut de böcker med den genre
+        books.stream()
+            .filter(b -> b.getGenre().equalsIgnoreCase(genre))
+            .forEach(b -> IO.println(b.getInfo()));
+    }
+
+    //Metod för att skriva ut böcker sorterat efter författare
+    public void printBooksSortedByAuthor(){
+        //Strömma igenom böcker, sortera genom att jämföra en boks författare med en annan boks författare, skriv ut böckerna sorterat efter författarnamn
+        books.stream()
+            .sorted((a,b) -> a.getAuthor().compareToIgnoreCase(b.getAuthor()))
+            .forEach(b -> IO.println(b.getInfo()));
+    }
+
+    //Metod för att skriva ut böcker sorterat efter genre
+    public void printBooksSortedByGenre(){
+        //Strömma igenom böcker, sortera genom att jämföra en boks genre med en annan boks genre, skriv ut böckerna sorterat efter genre
+        books.stream()
+            .sorted((a,b) -> a.getGenre().compareToIgnoreCase(b.getGenre()))
+            .forEach(b -> IO.println(b.getInfo()));
+    }
+
+    //Metod för att räkna antal böcker av en författare
+    public void countBooksByAuthor(){
+        String auhtor = checkEmpty("Ange författare: ");
+
+        //Strömma igenom böcker, filtrera genom att jämföra varje boks författare med den angivna författaren, räkna antalet författare som matchar
+        long count = books.stream()
+            .filter(b -> b.getAuthor().equalsIgnoreCase(auhtor))
+            .count();
+
+        IO.println("Antal böcker av " + auhtor + ": " + count);
+    }
+
+    //Metod för att skriva ut alla bokförfattare
+    public void printBookAuthors(){
+        //Strömma igenom böckerna, plocka ut varje boks författare, ta bort dubletter, skriv ut varje författare
+        books.stream()
+            .map(b -> b.getAuthor())
+            .distinct()
+            .forEach(b -> IO.println(b));
+    }
+
+    //Metod för att skriva ut alla bokgenrer
+    public void printBookGenres(){
+        //Strömma igenom böckerna, plocka ut varje boks genre, ta bort dubletter, skriv ut varje genre
+        books.stream()
+            .map(b -> b.getGenre())
+            .distinct()
+            .forEach(g -> IO.println(g));
+    }
+
     /****************************************
      * =============== METODER ===============
      ****************************************/

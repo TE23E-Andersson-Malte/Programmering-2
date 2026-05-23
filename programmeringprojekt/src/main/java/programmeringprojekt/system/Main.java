@@ -30,7 +30,8 @@ public class Main {
                     4. Kan användaren låna?
                     5. Hitta
                     6. Ta bort
-                    7. Avsluta
+                    7. Streams
+                    8. Avsluta
                     """);
             val = bibliotek.checkChoice();
             IO.println("\n-------------------------------------------------");
@@ -329,7 +330,90 @@ public class Main {
                         }
                     }
                     break;
-                case 7:
+                case 7: 
+                    IO.println("""
+                            === STREAMS ===
+                            1. Filtrering
+                            2. Sortering
+                            3. Visa data
+                            4. Gå tillbaka
+                            """);
+                            val = bibliotek.checkChoice();
+                    IO.println("\n-------------------------------------------------");
+                    switch (val) {
+                        case 1:
+                            IO.println("""
+                                    === FILTRERING ===
+                                    1. Filtrera böcker efter författare
+                                    2. Filtrera böcker efter genre
+                                    3. Gå tillbaka
+                                    """);
+                            val = bibliotek.checkChoice();
+                            IO.println("\n-------------------------------------------------");
+                            switch (val) {
+                                case 1 -> bibliotek.printBooksFilteredByAuthor();
+                                case 2 -> bibliotek.printBooksFilteredByGenre();
+                                case 3 -> {
+                                    break;
+                                }
+                                default -> {
+                                    IO.println("\nOgiltigt val! Försök igen...");
+                                    break;
+                                }
+                            }
+                            break;
+                        case 2:
+                            IO.println("""
+                                    === SORTERING ===
+                                    1. Sortera böcker efter författare
+                                    2. Sortera böcker efter genre
+                                    3. Gå tillbaka
+                                    """);
+                            val = bibliotek.checkChoice();
+                            IO.println("\n-------------------------------------------------");
+                            switch (val) {
+                                case 1 -> bibliotek.printBooksSortedByAuthor();
+                                case 2 -> bibliotek.printBooksSortedByGenre();
+                                case 3 -> {
+                                    break;
+                                }
+                                default -> {
+                                    IO.println("\nOgiltigt val! Försök igen...");
+                                    break;
+                                }
+                            }
+                            break;
+                        case 3:
+                            IO.println("""
+                                    === VISA DATA ===
+                                    1. Visa antal böcker av en författare
+                                    2. Visa alla bokförfattare
+                                    3. Visas alla bokgenrer
+                                    4. Gå tillbaka
+                                    """);
+                            val = bibliotek.checkChoice();
+                            IO.println("\n-------------------------------------------------");
+                            switch (val) {
+                                case 1 -> bibliotek.countBooksByAuthor();
+                                case 2 -> bibliotek.printBookAuthors();
+                                case 3 -> bibliotek.printBookGenres();
+                                case 4 -> {
+                                    break;
+                                }
+                                default -> {
+                                    IO.println("\nOgiltigt val! Försök igen...");
+                                    break;
+                                }
+                            }
+                            break;
+                        case 4:
+                            break;
+                        default:
+                            IO.println("\nOgiltigt val! Försök igen...");
+                            break;
+                    }
+                    break;
+                case 8:
                     IO.println("Avslutar...\n");
                     loop = false;
                     Unirest.shutDown();
