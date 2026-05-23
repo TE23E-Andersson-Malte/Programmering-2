@@ -1,5 +1,18 @@
 package programmeringprojekt.items;
 
+/**
+ * Representerar ett spel i bibliotekssystemet.
+ * Ärver från Media och lägger till genre och rekommenderad ålder.
+ *
+ * Klassen används av LibrarySystem för att hantera och visa information
+ * om spel som kan lånas ut.
+ *
+ * @author Malte Andersson
+ * @version 1.0
+ * @since 2026
+ */
+
+
 public class Game extends Media{
     private String genre;
     private int age;

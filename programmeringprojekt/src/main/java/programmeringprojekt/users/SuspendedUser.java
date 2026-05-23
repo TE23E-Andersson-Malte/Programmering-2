@@ -1,11 +1,14 @@
 package programmeringprojekt.users;
 
-/*
-Malte Andersson
+/**
 Klassen SuspendedUser representerar en avstängd kund i bibliotekssystemet
 Den lagrar en koppling till en befintlig användare genom customer_id (tidigare userId)
 vilket gör det möjlit för LibrarySystem att avgöra om en kund är avstängd och därmed inte får långa material
 Klassen används även av LibrarySystem för kontroll av lånerättigheter samt hämtning, skapande och borttagning av avstängda kunder
+*
+* @author Malte Andersson
+* @version 1.0
+* @since 2026
 */
 
 public class SuspendedUser {

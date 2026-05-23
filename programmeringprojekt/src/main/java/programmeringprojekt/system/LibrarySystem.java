@@ -1,7 +1,6 @@
 package programmeringprojekt.system;
 
 /**
- * Malte Andersson
  * LibrarySystem är kärnan i bibliotekssystemet och ansvarar för all logik som rör hantering av böcker, tidningar, användare och avstängda
  * Klassen kommunicerar med servern via HTTP-anrop (GET, POST, DELETE)
  * och använder Gson för att översätta JSON-data till Java-objekt och tvärtom.

@@ -3,7 +3,6 @@ package programmeringprojekt.system;
 import kong.unirest.Unirest;
 
 /**
-* Malte Andersson
 * Klassen Main är programmets startpunkt ansvarar för visa huvudmenyn och dess undermenyer 
 * samt ansvarar för användarens val.
 * Main skapar ett LibrarySystem-objekt och anropar dess metoder beroende på användarens val i menyn

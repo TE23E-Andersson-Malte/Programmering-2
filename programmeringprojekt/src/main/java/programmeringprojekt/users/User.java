@@ -1,11 +1,13 @@
 package programmeringprojekt.users;
 
-/*
-Malte Andersson
+/**
 Klassen User representerar en kund/användare i bibliotekssytemet
 och innehåller grundläggande information som namn och email, samt en lista med lånade objekt
 User-objekt används av LibrarySystem för att hantera registrering, sökning, borttagning och sortering av kunder
 Klassen implementerar gränssnittet comparable vilket gör det möjligt att sortera användare efter namn
+*@author Malte Andersson
+* @version 1.0
+* @since 2026
 */
 
 public class User implements Comparable<User> {

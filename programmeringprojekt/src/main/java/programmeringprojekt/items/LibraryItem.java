@@ -1,7 +1,6 @@
 package programmeringprojekt.items;
 
-/*
- * Malte Andersson
+/**
  * Filen innehåller den abstrakta klassen LibraryItem (biblioteksförenål)
  * som representerar ett föremål i ett bibliotek
  * och innehåller egenskaperna id, titel och isAvailable (om föremålet är tillgängligt för utlåning)
@@ -9,6 +8,10 @@ package programmeringprojekt.items;
  * som ärver variabler och metoder
  * Eftersom LibraryItem är abstrkt kan inga objekt av denna klass skapas direkt, utan endast genom dess subklasser
  * Klassen implementerar gränssnittet comparable (vilket betyder att Book och Magazine också implementerar det) vilket gör det möjligt att sortera objekt efter titel
+ * 
+ * @author Malte Andersson
+ * @version 1.0
+ * @since 2026
  */
 
 public abstract class LibraryItem implements Comparable<LibraryItem>{

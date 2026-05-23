@@ -1,5 +1,16 @@
 package programmeringprojekt.items;
 
+/**
+ * Representerar en film i bibliotekssystemet.
+ *  Klassen ärver från Media (type, id, title, isAvailable) och lägger till egna variablar: genre och minutes.
+ * Används av LibrarySystem för att hantera film-objekt
+ *
+ * @author Malte Andersson
+ * @version 1.0
+ * @since 2026
+ */
+
+
 public class Movie extends Media{
     private String genre;
     private int minutes;

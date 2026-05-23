@@ -1,5 +1,15 @@
 package programmeringprojekt.items;
 
+/**
+ * Representerar ett musikalbum i bibliotekssystemet.
+ * Klassen ärver från Media (type, id, title, isAvailable) och lägger till en egen variabel: artist.
+ * Används av LibrarySystem för att hantera musikalbum-objekt
+ *
+ * @author Malte Andersson
+ * @version 1.0
+ * @since 2026
+ */
+
 public class MusicAlbum extends Media {
     private String artist;
 

@@ -2,14 +2,26 @@ package programmeringprojekt.items;
 
 import programmeringprojekt.loans.Borrowable;
 
-public abstract class Media implements Comparable<Media>, Borrowable{
+/**
+ * Abstrakt basklass för alla medietyper i bibliotekssystemet.
+ * Innehåller gemensamma fält som id, titel, typ och tillgänglighet,
+ * samt standardfunktioner för lån och retur enligt Borrowable.
+ *
+ * Klassen används som grund för t.ex. Movie, MusicAlbum och Game.
+ *
+ * @author Malte Andersson
+ * @version 1.0
+ * @since 2026
+ */
+
+public abstract class Media implements Comparable<Media>, Borrowable {
     protected String id;
     protected String title;
     protected boolean isAvailable;
     protected String type;
 
-    /***KONSTRUKTOR***/
-    public Media(String type, String id, String title, boolean isAvailable){
+    /*** KONSTRUKTOR ***/
+    public Media(String type, String id, String title, boolean isAvailable) {
         this.id = id;
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Titel får inte vara tomt");
@@ -24,7 +36,7 @@ public abstract class Media implements Comparable<Media>, Borrowable{
         this.isAvailable = isAvailable;
     }
 
-    /***GETTERS***/
+    /*** GETTERS ***/
     public String getId() {
         return id;
     }
@@ -33,30 +45,36 @@ public abstract class Media implements Comparable<Media>, Borrowable{
         return title;
     }
 
-    public boolean getIsAvailable(){
+    public boolean getIsAvailable() {
         return isAvailable;
     }
 
-    public String getType(){
+    public String getType() {
         return type;
     }
 
-    /***SETTERS***/
-    public void setIsAvailable(boolean isAvailable){
+    /*** SETTERS ***/
+    public void setIsAvailable(boolean isAvailable) {
         this.isAvailable = isAvailable;
     }
 
-    //COMPARE TO metod
+    // COMPARE TO metod
     @Override
-    public int compareTo(Media other){
+    public int compareTo(Media other) {
         return this.title.compareToIgnoreCase(other.title);
     };
 
-    //GET INFO
+    // GET INFO
     public abstract String getInfo();
 
-    /***LÅN- OCH RETURFUNKTIONER***/
-    public boolean borrowItem(){
+    /**
+     * Försöker låna ut objektet.
+     * Om objektet är tillgängligt markeras det som utlånat och true returneras.
+     * Om det redan är utlånat returneras false.
+     *
+     * @return true om utlåningen lyckades, annars false
+     */
+    public boolean borrowItem() {
         if (getIsAvailable()) {
             setIsAvailable(false);
             IO.println("\nObjektet lånades ut");
@@ -66,7 +84,11 @@ public abstract class Media implements Comparable<Media>, Borrowable{
         }
     }
 
-    public void returnItem(){
+    /**
+     * Markerar objektet som återlämnat och gör det tillgängligt igen.
+     * Skriver även ut ett meddelande om att objektet lämnades tillbaka.
+     */
+    public void returnItem() {
         setIsAvailable(true);
         IO.println("\nObjektet lämnades tillbaka.");
     }

@@ -2,14 +2,18 @@ package programmeringprojekt.items;
 
 import programmeringprojekt.loans.Borrowable;
 
-/*
- * Malte Andersson
+/**
  * Klassen Magazine är en barnklass till den abstrakta klassen LibraryItem
  * och representerar en tidning i biblioteket med unika egenskaper
  * som utgåvonummer, kategori och publiserat år
  * Magazine används av LibrarySystem som hanterar in- och utlånning samt lagring av tidnings-objekt
  * Klassen implementerar gränssnittet Borrowable
  * vilket gör att den måste definera funktioner för lån och retur av en tidning
+ * 
+ * 
+ * @author Malte Andersson
+ * @version 1.0
+ * @since 2026
 */
 
 public class Magazine extends LibraryItem implements Borrowable{
@@ -55,8 +59,13 @@ public class Magazine extends LibraryItem implements Borrowable{
          issueNumber + " | Category: " + category + " | PublishedYear: " + publishedYear;
     }
 
-    /***LÅN- OCH RETURFUNKTIONER***/
-    @Override
+/**
+ * Försöker låna ut tidningen.
+ * Om tidningen är tillgänglig markeras den som utlånad och true returneras.
+ * Om den redan är utlånad returneras false.
+ *
+ * @return true om utlåningen lyckades, annars false
+ */    @Override
     public boolean borrowItem(){
         if (getIsAvailable()) {
             setIsAvailable(false);
@@ -67,6 +76,10 @@ public class Magazine extends LibraryItem implements Borrowable{
         }
     }
 
+    /**
+ * Markerar tidningen som återlämnad och gör den tillgänglig igen.
+ * Skriver även ut ett meddelande om att tidningen lämnades tillbaka.
+ */
     @Override
     public void returnItem(){
         setIsAvailable(true);
